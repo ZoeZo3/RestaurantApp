@@ -1,0 +1,76 @@
+{% extends "owner/base.html" %}
+{% block title %} Menu {% endblock%}
+{% block content%}
+    <h1 class="title">Menu</h1>
+    <br>
+    <h5>Sélectionnez les plats qui sont actuellement au menu.</h5>
+    <br>
+    <form method="POST">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Entrées</h5>
+                <div id="starters">
+                    <select type="text" id="ingredient_1" name="ingredient_1" class="form-control selectpicker selectpicker-ingredient_1" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ingredients_list}})" title="Sélectionner un ingrédient" required>
+                        {% for recipe in recipes_list %}
+                        <option value={{recipe.id}}>{{recipe.name.capitalize()}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                      <button class="btn btn btn-light" type="button" onclick="addNewRecipeRow('sa', starters, 'ingredient_1')"><i class="fas fa-plus add_icon"></i> Ajouter une recette</button>
+                    </div>
+                </div>
+            </div>  
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Plats</h5>
+            </div>  
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Desserts</h5>
+            </div>  
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Boissons</h5>
+            </div>  
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+    </form>
+
+
+
+
+
+
+
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Entrées</li>
+        <li class="list-group-item">Plats</li>
+        <li class="list-group-item">Desserts</li>
+        <li class="list-group-item">Boissons</li>
+    </ul>
+
+
+    <ul class="list-group list-group-flush" id="notes">
+        {% for note in user.notes %}
+        <li class="list-group-item">{{note.data}}
+            <button type="button" class="close" onclick="deleteNote({{ note.id }})">
+                <span>&times;</span>
+            </button>
+        </li>
+        {% endfor%}
+    </ul>
+    <form method="POST">
+        <textarea name="note" id="note" class="form-control"></textarea>
+        <br>
+        <div align="center">
+            <button type="submit" class="btn btn-primary">Add note</button>
+        </div>
+    </form>
+{% endblock%}

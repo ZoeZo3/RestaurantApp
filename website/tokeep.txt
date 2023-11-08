@@ -1,0 +1,5 @@
+'''
+recipe_to_delete = Recipe.query.get(recipe["recipeID"])
+if recipe_to_delete:
+    if recipe_to_delete.user_id == current_user.id:
+        db.session.delete(recipe_to_delete)'''

@@ -1,0 +1,115 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #eeeee4;
+}
+
+.navbar-toggler {
+    height: 100%;
+}
+
+#global-navbar {
+    background-color: #eab676 !important;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    font-weight: 600;
+}
+
+.nav-right {
+    display: flex;
+    flex-direction: row;
+}
+
+.nav-right > a {
+    padding-left: 10px !important;
+}
+
+.title {
+    font-weight: 900;
+    font-size: 50px;
+    text-align: center;
+    margin: 30px;
+    color: #eab676;
+}
+
+.btn {
+    font-family: 'Montserrat', sans-serif;
+}
+
+ul {
+    list-style-type: disc;
+    line-height: 3;
+}
+
+li::marker {
+    color: #eab676; /* Change the color to red */
+}
+
+li > a {
+    color: unset;
+}
+
+li > a:hover {
+    color: #eab676;
+    text-decoration: none;
+}
+
+.homepage-text {
+    font-size: 20px;
+}
+
+.center-form {
+    margin-left: 70px;
+    margin-right: 70px;
+}
+
+.ingredient-row-form {
+    margin-bottom: 10px;
+}
+
+.form-header {
+    margin-left: 10px;
+}
+
+.close {
+    margin-top: 7px;
+    margin-right: 30px;
+}
+
+.bs-placeholder {
+    background-color: #fff;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+.bs-placeholder:hover {
+    background-color: #fff;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+.filter-option {
+    color: #6d757d;
+}
+
+.btn-add-ingredient {
+    color: black;
+    background-color: lightgrey;
+}
+
+.recipe-description {
+    font-style: italic;
+    font-size: smaller;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.inline-buttons {
+    text-align: right;
+}
+.no-margin {
+    margin-left: 0px;
+    margin-right: 0px;
+}
