@@ -15,12 +15,11 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
-                flash("Logged in", category="success")
                 login_user(user, remember=True)
                 return redirect(url_for("owner.home"))
-            flash("Invalid password", category="error")
+            flash("Le mot de passe n'est pas valide.", category="error")
         else:
-            flash("Invalid email address", category="error")
+            flash("L'adresse email n'est pas valide.", category="error")
 
     return render_template("owner/login.html", user=current_user)
 
@@ -33,25 +32,25 @@ def signUp():
         password2 = request.form.get("password2")
 
         if len(email) < 4:
-            flash("Email is invalid", category="error")
+            flash("L'adresse email n'est pas valide.", category="error")
         elif len(firstName) < 2:
-            flash("First name must be at least 2 caracters", category="error")
+            flash("Votre nom doit faire au moins 2 lettres.", category="error")
         elif password1 != password2:
-            flash("Passwords don't match", category="error")
+            flash("Les mots de passe ne sont pas identiques.", category="error")
         elif len(password1) < 7:
-            flash("Password must be at least 7 caracters", category="error")
+            flash("Le mot de passe doit faire au moins 7 caractères.", category="error")
         else:
             # check if user already exists
             user = User.query.filter_by(email=email).first()
             if user:
-                flash("You already have an account with this email address.", category="error")
+                flash("Vous avez déjà un compte associé à cette adresse mail.", category="error")
             else:
                 # add user to the database
                 new_user = User(email=email, first_name=firstName, password=generate_password_hash(password1, method="sha256"))
                 db.session.add(new_user)
                 db.session.commit( )
                 login_user(new_user, remember=True)
-                flash("Account successfuly created", category="success")
+                flash("Votre compte a bien été créé.", category="success")
                 return redirect(url_for("owner.home"))
 
     return render_template("owner/sign_up.html", user=current_user)

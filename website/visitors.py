@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, request, flash, jsonify
-from flask_login import login_required, current_user
-from .models import Note
+from flask import Blueprint, render_template, request, flash
+from flask_login import current_user
 from . import db, mail, owner
 import json
 from flask_mail import Message
@@ -10,7 +9,7 @@ visitors = Blueprint("visitors", __name__)
 
 @visitors.route("/", methods=["POST", "GET"])
 def home():
-    if request.method == "POST":
+    '''if request.method == "POST":
         note = request.form.get("note")
         if len(note) > 0:
             #insert note into DB
@@ -19,7 +18,7 @@ def home():
             db.session.commit()
 
         else:
-            flash("Please enter a note.", category="error")
+            flash("Please enter a note.", category="error")'''
 
     return render_template("visitor/home.html", user=current_user)
 
@@ -35,7 +34,6 @@ def contact():
         else:
             msg = Message(subject, sender = sender, recipients = [owner])
             msg.body = body + "\nNom: " + name + "\nEmail: " + sender
-            print(sender)
             mail.send(msg)
             flash("Votre message a bien été envoyé !", category="success")
     return render_template("visitor/contact.html", user=current_user)

@@ -3,7 +3,8 @@ from flask_login import login_required, current_user
 from .models import Ingredient, IngredientSchema, Recipe, RecipeSchema, IngredientByRecipe
 from . import db, owner, ma
 import json
-from flask_mail import Message
+from werkzeug.utils import secure_filename
+import os
 
 owner = Blueprint("owner", __name__)
 
@@ -13,9 +14,17 @@ owner = Blueprint("owner", __name__)
 def home():
     return render_template("owner/home.html", user=current_user)
 
-@owner.route("/menu")
+@owner.route("/menu", methods=["POST", "GET"])
 @login_required
 def menu():
+    if request.method == 'POST':
+        file = request.files["file-upload"]
+        if file.filename == "":
+            flash("Vous n'avez pas sélectionné de fichier.", category="error")
+        else:
+            file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),"static/menu",secure_filename("menu.png")))
+            flash("Menu mis à jour !", category="success")
+        
     recipes_list = Recipe.query.filter_by(user_id=current_user.id)
     recipe_schema = RecipeSchema(many=True)
     output = recipe_schema.dump(recipes_list)
@@ -31,7 +40,7 @@ def recipes():
             #check if recipe already exists
             recipe = Recipe.query.filter_by(name=name).first()
             if recipe:
-                flash("This recipe already exists.", category="error")
+                flash("Une recette avec le même nom existe déjà.", category="error")
             else:
                 description = request.form.get("description")
                 #retrieve ingredients and their quantities in a list of dicts

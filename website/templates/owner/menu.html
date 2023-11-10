@@ -3,6 +3,23 @@
 {% block content%}
     <h1 class="title">Menu</h1>
     <br>
+    <div class="upload-menu">
+        <div class="upload-menu--form">
+            <h4>Téléchargez le menu au format PNG</h4>
+            <form method="POST" enctype="multipart/form-data">
+                <input type="file" name="file-upload" accept=".png">
+                <input type="submit" value="Télécharger">
+            </form>
+        </div>
+        <div class="upload-menu--overview">
+            <div>Aperçu du menu visible sur le site</div>
+            <div class="menu-img menu-img-owner">
+                <img src="../../static/menu/menu.png">
+            </div>
+        </div>
+    </div>
+    <hr>
+    <h5><i>Idée d'amélioration : permettre de sélectionner ses recettes et générer automatiquement un menu</i></h5>
     <h5>Sélectionnez les plats qui sont actuellement au menu.</h5>
     <br>
     <form method="POST">
@@ -40,37 +57,6 @@
         </div>
         <div>
             <button type="submit" class="btn btn-primary">Enregistrer</button>
-        </div>
-    </form>
-
-
-
-
-
-
-
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">Entrées</li>
-        <li class="list-group-item">Plats</li>
-        <li class="list-group-item">Desserts</li>
-        <li class="list-group-item">Boissons</li>
-    </ul>
-
-
-    <ul class="list-group list-group-flush" id="notes">
-        {% for note in user.notes %}
-        <li class="list-group-item">{{note.data}}
-            <button type="button" class="close" onclick="deleteNote({{ note.id }})">
-                <span>&times;</span>
-            </button>
-        </li>
-        {% endfor%}
-    </ul>
-    <form method="POST">
-        <textarea name="note" id="note" class="form-control"></textarea>
-        <br>
-        <div align="center">
-            <button type="submit" class="btn btn-primary">Add note</button>
         </div>
     </form>
 {% endblock%}
