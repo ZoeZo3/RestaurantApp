@@ -181,3 +181,46 @@ li > a:hover {
 .contact-send > a:active {
     background-color: #e7aa60;
 }
+
+.stock-item-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+}
+
+.stock-title {
+    font-weight: 600;
+}
+
+.stock-item-line--section {
+    display: flex;
+    align-items: center;
+    width: 25%;
+}
+
+.stock-btn--update {
+    background-color: #eeeee4;
+    color: #eab676;
+    border: solid 1px #eab676;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+#add-stock {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 100px;
+}
+
+.stock-btn--add {
+    background-color: #eab676;
+    color: #eeeee4;
+    border: none;
+    border-radius: 5px;
+    height: 100%;
+    padding: 10px;
+}

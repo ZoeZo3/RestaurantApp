@@ -1,0 +1,112 @@
+{% extends "owner/base.html" %}
+{% block title %} Stock {% endblock%}
+{% block content%}
+    <h1 class="title">Votre inventaire</h1>
+    <div id="accordion" class="overflow-auto" style="max-height: 300px;">
+        <ul id="stocks_listing" class="list-group list-group-flush">
+            <li>
+                <div class="stock-item-line">
+                    <div class="stock-item-line--section stock-title">Ingrédient</div>
+                    <div class="stock-item-line--section stock-title">Quantité</div>
+                    <div class="stock-item-line--section stock-title">Unité</div>
+                    <div class="stock-item-line--section stock-title"></div>
+                </div>
+            </li>
+            {% for item in stock %}
+            <li>
+                <div id="item_{{ item.name }}" class="stock-item-line">
+                    <div class="stock-item-line--section">{{ item.name }}</div>
+                    <div class="stock-item-line--section">{{ item.quantity }}</div>
+                    <div class="stock-item-line--section">{{ item.unit }}</div>
+                    <div class="stock-item-line--section">
+                        <button type="button" class="stock-btn--update" onclick="updateStock()">
+                            Modifier
+                        </button>
+                    </div>
+                </div>
+            </li>
+            {% endfor%}
+        </ul>
+    </div>
+    <br><br><br>
+    <h3>Ajouter du stock</h3>
+    <br>
+    <form id="add-stock" name="add-stock" method="POST">
+        <div>
+            <select type="text" id="ingredient" name="ingredient" class="form-control selectpicker selectpicker-ingredient" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ ingredients_list }})" title="Sélectionner un ingrédient" required>
+                <option value="add"
+                    data-content='<span class="btn btn-link btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
+                        <i class="fas fa-plus add_icon"></i> Ajouter un nouvel élément</span>'>
+                </option>
+                {% for ingredient in ingredients_list %}
+                <option value={{ingredient.id}}>{{ingredient.name.capitalize()}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="quantity">
+                <input type="number" id="quantity" name="quantity" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
+        </div>
+        <div class="unit">
+            <label type="text" id="unit" name="unit">-</input>
+        </div>
+        <div class="">
+            <button type="submit" name="register-stock" class="stock-btn--add">Ajouter au stock</button>
+        </div>
+    </form>
+
+    <!-- Modal div to open a popup when registreing new element -->
+    <div class="modal fade" id="modal-register-ingredient" tabindex="-1" role="dialog" aria-labelledby="registerIngredient" aria-hidden="true">
+        <div class="modal-dialog modal-content" role="document">
+            <div class="modal-header">
+              <h5 class="modal-title" id="regsiterIngredient">Enregistrer un ingrédient</h5>
+              <button type="button" class="close close-modal-ingredient" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="row">
+                    <div class="col md-6">
+                        <input type="text" class="form-control" id="ingredient" name="ingredient" placeholder="Nom" required>
+                    </div>
+                    <div class="col md-6">
+                        <select type="text" class="form-control" id="unit" name="unit" placeholder="Unité" required>
+                        <option value="" disabled selected hidden>Unité</option>
+                            <option value="g">Grammes</option>
+                            <option value="kg">Kilogrammes</option>
+                            <option value="L">Litres</option>
+                            <option value="mL">Millilitres</option>
+                            <option value="cuillère">cuillère</option>
+                            <option value="pincée">pincée</option>
+                            <option value="unité">unité</option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="alert alert-warning alert-modal-incomplete" role="alert" style="display: none;">
+                    Merci d'entrer un nom et une unité.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div> 
+                <div class="alert alert-warning alert-modal-exists" role="alert" style="display: none;">
+                    Cet ingrédient existe déjà.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>                  
+                <div class="modal-footer">
+                    <button type="button" id="" class="btn btn-primary btn-add-ingredient-to-database" onclick="addIngredientToDatabase(this.parentNode.parentNode, {{ingredients_list}})">Enregistrer</button>
+                </div>
+              </form>
+            </div>
+        </div>
+      </div>
+
+    <!-- Hidden button to generate the modal divs -->
+    <button type="button" id="button-for-modal-update-recipe" class="btn btn-primary" data-toggle="modal" data-target="#modal-update-recipe" hidden></button>
+    <button type="button" id="button-for-modal-register-ingredient" class="btn btn-primary" data-toggle="modal" data-target="#modal-register-ingredient" hidden></button>
+    <br>
+    <br>
+    
+{% endblock%}

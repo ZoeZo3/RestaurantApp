@@ -35,3 +35,14 @@ class IngredientByRecipe(db.Model):
     id = db.Column(db.Integer, db.ForeignKey('ingredient.id'))
     quantity = db.Column(db.Float)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+
+class Stock(db.Model):
+    line = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('ingredient.id'))
+    quantity = db.Column(db.Float)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+class RecipeStock(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Stock
+        include_fk = True

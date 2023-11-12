@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
-from .models import Ingredient, IngredientSchema, Recipe, RecipeSchema, IngredientByRecipe
+from .models import Ingredient, IngredientSchema, Recipe, RecipeSchema, IngredientByRecipe, Stock
 from . import db, owner, ma
 import json
 from werkzeug.utils import secure_filename
@@ -156,3 +156,20 @@ def sales():
     recipe_schema = RecipeSchema(many=True)
     output = recipe_schema.dump(recipes_list)
     return render_template("owner/sales.html", user=current_user, recipes_list=output)
+
+@owner.route("/stock")
+@login_required
+def stock():
+    # get all registred ingredients
+    ingredients_list = Ingredient.query.filter_by(user_id=current_user.id).order_by("name")
+    ingredients_schema = IngredientSchema(many=True)
+    output = ingredients_schema.dump(ingredients_list)
+
+    # get stock data
+    stock = db.session.query(Stock.id, Ingredient.name, Ingredient.unit, Stock.quantity)\
+        .filter(Stock.user_id==current_user.id)\
+        .filter(Stock.id==Ingredient.id).filter(Stock.user_id==Ingredient.user_id)\
+        .all()
+
+    # display page
+    return render_template("owner/stock.html", user=current_user, ingredients_list=output, stock=stock)
