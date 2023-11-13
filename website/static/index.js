@@ -54,11 +54,13 @@ function deleteRow(row) {
 
 // add a line for an ingredient in the recipe creation form
 function addNewIngredientRow(ingredients_list, div_id, id) {
+    console.log(div_id)
     // select the div where to append a new line
     div_to_append = $("#" + div_id)[0];
 
     // get the id of the new line by adding one to the id of the last line if adding a new line from the button
     if (id === undefined){
+        console.log(div_to_append)
         nb_of_ingredients = div_to_append.getElementsByTagName("select").length;
         // if it is the first ingredient row, id = 1
         if (nb_of_ingredients == 0) {
@@ -82,34 +84,27 @@ function addNewIngredientRow(ingredients_list, div_id, id) {
         options += ("<option class='ingredient_option' value=" + ingredients_list[i].id + ">" + toTitleCase(ingredients_list[i].name) + "</option>");
     }
     new_div.innerHTML = (`
-    <div  class="row ingredient-row-form" align="center">
-        <div class="col-md-5">
-            <div>
-                <select type="text" id="ingredient_` + id + `" name="ingredient_` + id + `" class="form-control selectpicker selectpicker-ingredient_` + id + `" data-live-search="true" onchange="ingredientSelectUpdate(this, ` + JSON.stringify(ingredients_list).replaceAll("\"", "\'") + `)" title="Sélectionner un ingrédient" required>
-                    <option value="add"
-                        data-content='<span class="btn btn-link btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
-                            <i class="fas fa-plus add_icon"></i> Ajouter un nouvel élément</span>'>
-                    </option>`
-                    + options +
-                `</select>
-            </div>
+    <div class="row">
+        <div style="width: 40%">
+            <select type="text" id="ingredient_` + id + `" name="ingredient_` + id + `" class="form-control selectpicker selectpicker-ingredient_` + id + `" data-live-search="true" onchange="ingredientSelectUpdate(this, ` + JSON.stringify(ingredients_list).replaceAll("\"", "\'") + `)" title="Sélectionner un ingrédient" required>
+                <option value="add"
+                    data-content='<span class="btn btn-link btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
+                        <i class="fas fa-plus add_icon"></i> Ajouter un nouvel élément</span>'>
+                </option>`
+                + options +
+            `</select>
         </div>
-        <div class="col-md-3">
-            <div>
-                <input type="number" id="quantity_` + id + `" name="quantity_` + id + `" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
-            </div>
+        <div style="width: 20%">
+            <input type="number" id="quantity_` + id + `" name="quantity_` + id + `" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
         </div>
-        <div class="col-md-3">
-            <div class="unit">
-                <label type="text" id="unit_` + id + `" name="unit_` + id + `">-</input>
-            </div>
+        <div class="unit" style="width: 20%">
+            <label type="text" id="unit_` + id + `" name="unit_` + id + `">-</input>
         </div>
-        <div class="col-md-1">
-            <button class="close" type="button" onclick="deleteRow(this)">
-                <span>&times;</span>
-            </button>
-        </div>
-    </div>`);
+        <button class="close" type="button" onclick="deleteRow(this)">
+            <span>&times;</span>
+        </button>
+    </div>
+    `);
 
     // append it to the div
     div_to_append.appendChild(new_div);
@@ -126,7 +121,6 @@ function ingredientSelectUpdate(selector, ingredients_list) {
         $(".btn-add-ingredient-to-database")[0].id = "line_" + selector.id;
         // simluate click on the modal activator button
         $("#button-for-modal-register-ingredient")[0].click();
-        console.log("popup opened.");
     }
     // else update the unit
     else {
@@ -243,26 +237,6 @@ function addNewRecipeRow(recipes_list, div_id, id) {
     $("#ingredient_" + id).selectpicker('refresh');
     console.log("Div appened!");
     }
-
-// when user modifies select value, either open the module for adding ingredient, either update ingredient unit
-function ingredientSelectUpdate(selector, ingredients_list) {
-    // if the value of the ingredient selector is "add", open the modal
-    if (selector.value == "add") {
-        // update modal button's id to keep track of the row from which the ingredient is being added
-        $(".btn-add-ingredient-to-database")[0].id = "line_" + selector.id;
-        // simluate click on the modal activator button
-        $("#button-for-modal-register-ingredient")[0].click();
-        console.log("popup opened.");
-    }
-    // else update the unit
-    else {
-        for (i=0; i<ingredients_list.length; i++) {
-            if (ingredients_list[i].id == selector.value) {
-                selector.parentElement.parentElement.parentElement.parentElement.getElementsByClassName("unit")[0].getElementsByTagName("label")[0].innerHTML = ingredients_list[i].unit;
-            }
-        }
-    }
-}
 
 // update stock
 function updateStock(line) {

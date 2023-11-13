@@ -19,10 +19,10 @@
                 </div>
                 <div class="stock-item-line--section">{{ item.unit }}</div>
                 <div class="stock-item-line--section">
-                    <button type="button" class="btn stock-btn--update" onclick="updateStock(this)">
+                    <button type="button" class="btn btn-light stock-btn--update" onclick="updateStock(this)">
                         Modifier
                     </button>
-                    <button type="button" class="btn stock-btn--save" onclick="saveStock(this)">
+                    <button type="button" class="btn btn-green stock-btn--save" onclick="saveStock(this)">
                         Enregistrer
                     </button>
                     <p class="stock-item-line-quantity--alert">Merci d'entrer un chiffre avec au plus 1 décimale.</p>
@@ -53,7 +53,7 @@
                 <label type="text" id="unit" name="unit">-</input>
             </div>
             <div>
-                <button type="submit" name="register-stock" class="btn stock-btn--add">Ajouter au stock</button>
+                <button type="submit" name="register-stock" class="btn btn-dark stock-btn--add">Ajouter au stock</button>
             </div>
         </form>
     </div>

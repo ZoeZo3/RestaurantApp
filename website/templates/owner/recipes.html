@@ -3,120 +3,82 @@
 {% block content %}
     <h1 class="title">Vos recettes</h1>
     <div id="accordion" class="overflow-auto" style="max-height: 300px;">
-        <ul id="recipes_listing" class="list-group list-group-flush">
+        <ul id="recipes_listing" class="list-group">
             {% for recipe in recipes %}
-            <li class="list-group-item">
-                <!--class="d-md-flex justify-content-md-end"-->
-                    <div id="recipe_{{ recipe.id }}" >
-                        <div class="col-md-8 inline">
-                            <span class="recipe_name">{{ recipe.name.capitalize() }}</span>
-                            <br>
-                            <span class="recipe-description">{{ recipe.description }}</span>
-                        </div>
-                        <div class="col-md-3 inline inline-buttons">
-                            <button type="button" class="btn btn btn-light btn-sm collapsed" data-toggle="collapse" data-target="#collapse_{{ recipe.id }}" aria-expanded="true" aria-controls="collapse_{{ recipe.id }}">
-                                Détails
-                            </button>
-                            <button type="button" class="btn btn-outline-info btn-sm" onclick="updateRecipe({{ recipe.id }})">
-                                Modifier
-                            </button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteRecipe({{ recipe.id }})">
-                                Supprimer
-                            </button>
-                        </div>
-                    </div>
-                    <div id="collapse_{{ recipe.id }}" class="collapse" aria-labelledby="recipe_ {{recipe.id }}" data-parent="#accordion">
-                        <div class="card-body">
-                            <ul class="list-group list-group-flush">
-                                {% set recipe_ingredients_dict = {"id": recipe.id, "name": recipe.name, "description": recipe.description, "ingredients": []} %}
-                                {% for ingredient in ingredients_by_recipe %}
-                                    {% if ingredient.recipe_id == recipe.id %}
-                                <li class="list-group-item">{{ ingredient.name }} : {{'{0:g}'.format(ingredient.quantity)}} {{ ingredient.unit }}</li>
-                                <!-- {{recipe_ingredients_dict["ingredients"].append({"id": ingredient.id, "name": ingredient.name, "quantity": ingredient.quantity, "unit": ingredient.unit})}} -->
-                                    {% endif %}
-                                {%endfor %}
-                                <li class="list-group-item">
-                                    <button type="button" class="btn btn-outline-primary" onclick="updateRecipe({{ ingredients_list }}, {{ recipe_ingredients_dict }})">Modifier</button>
-                                </li>
-                            </ul>
-                            
+            <li id="recipe_{{ recipe.id }}">
+                <div class="recipe-line">
+                    <div class="recipe-text">
+                        <div>{{ recipe.name.capitalize() }}</div>
+                        <div class="recipe-description">{{ recipe.description }}</div>
+                        <div id="collapse_{{ recipe.id }}" class="collapse" aria-labelledby="recipe_ {{recipe.id }}" data-parent="#accordion">
+                                <ul>
+                                    {% set recipe_ingredients_dict = {"id": recipe.id, "name": recipe.name, "description": recipe.description, "ingredients": []} %}
+                                    {% for ingredient in ingredients_by_recipe %}
+                                        {% if ingredient.recipe_id == recipe.id %}
+                                    <li class="list-group-item">{{ ingredient.name }} : {{'{0:g}'.format(ingredient.quantity)}} {{ ingredient.unit }}{% if ingredient.unit == "unité" and ingredient.quantity > 1 %}s{% endif %}</li>
+                                        {% endif %}
+                                    {%endfor %}
+                                    <li class="list-group-item">
+                                        <button type="button" class="btn btn-green btn-sm" onclick="updateRecipe({{ ingredients_list }}, {{ recipe_ingredients_dict }})" style="margin-bottom: 15px;">Modifier</button>
+                                    </li>
+                                </ul>
                         </div>
                     </div>
+                    <div class="recipe-buttons">
+                        <button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#collapse_{{ recipe.id }}" aria-expanded="true" aria-controls="collapse_{{ recipe.id }}">
+                            Détails
+                        </button>
+                        <button type="button" class="btn btn-dark btn-sm" onclick="deleteRecipe({{ recipe.id }})">
+                            Supprimer
+                        </button>
+                    </div>
+                </div>
+                <hr style="margin: 0px 30px;">
             </li>
             {% endfor %}
         </ul>
     </div>
-    <br>
-    <h1 align="center">Ajouter une recette</h1>
-    <br>
+    <h1 align="center" style="margin-top: 70px; margin-bottom: 50px;">Ajouter une recette</h1>
     <form id="add-recipe" name="add-recipe" method="POST">
-        <!--Global recipe info-->
-        <div class="row">
-            <div class="col-md-6">
-                    <input type="text" id="name" name="name" class="form-control" placeholder="Nom" required>
-            </div>
-            <div class="col-md-6">
-                <div>
-                    <input type="text" id="description" name="description" class="form-control" placeholder="Descriptif" required>
-                </div>
-            </div>
+        <div class="row" style="margin-bottom: 40px;"">
+            <input type="text" id="name" name="name" class="form-control recipe-header" placeholder="Nom" required>
+            <input type="text" id="description" name="description" class="form-control recipe-header" placeholder="Descriptif" required>
         </div>
-        <br>
-        <!--Headers-->
-        <div class="row">
-            <div class="col-md-5">
-                <label class="form-header">Ingrédient</label>
-            </div>
-            <div class="col-md-3">
-                <label class="form-header">Quantité</label>
-            </div>
-            <div class="col-md-3">
-                <label class="form-header">Unité</label>
-            </div>
-        </div>    
-        <!--Form body-->
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="form-header" style="width: 40%">Ingrédient</div>
+            <div class="form-header" style="width: 20%">Quantité</div>
+            <div class="form-header" style="width: 20%">Unité</div>
+            <div style="width: 5%"></div>
+        </div>   
         <div id="ingredients_list">
-            <div  class="row ingredient-row-form" align="center">
-                <div class="col-md-5">
-                    <div>
-                        <select type="text" id="ingredient_1" name="ingredient_1" class="form-control selectpicker selectpicker-ingredient_1" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ingredients_list}})" title="Sélectionner un ingrédient" required>
-                            <option value="add"
-                                data-content='<span class="btn btn-link btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
-                                    <i class="fas fa-plus add_icon"></i> Ajouter un nouvel élément</span>'>
-                            </option>
-                            {% for ingredient in ingredients_list %}
-                            <option value={{ingredient.id}}>{{ingredient.name.capitalize()}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+            <div class="row">
+                <div style="width: 40%">
+                    <select type="text" id="ingredient_1" name="ingredient_1" class="form-control selectpicker selectpicker-ingredient_1" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ingredients_list}})" title="Sélectionner un ingrédient" required>
+                        <option value="add"
+                            data-content='<span class="btn btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
+                                <i class="fas fa-plus add_icon"></i> Ajouter un nouvel élément</span>'>
+                        </option>
+                        {% for ingredient in ingredients_list %}
+                        <option value={{ingredient.id}}>{{ingredient.name.capitalize()}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="col-md-3">
-                    <div>
-                        <input type="number" id="quantity_1" name="quantity_1" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
-                    </div>
+                <div style="width: 20%">
+                    <input type="number" id="quantity_1" name="quantity_1" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
                 </div>
-                <div class="col-md-3">
-                    <div class="unit">
-                        <label type="text" id="unit_1" name="unit_1">-</input>
-                    </div>
+                <div class="unit" style="width: 20%">
+                    <label type="text" id="unit_1" name="unit_1">-</input>
                 </div>
-                <div class="col-md-1">
-                    <button class="close" type="button" onclick="deleteRow(this)">
-                        <span>&times;</span>
-                    </button>
-                </div>
+                <button class="close" type="button" onclick="deleteRow(this)">
+                    <span>&times;</span>
+                </button>
             </div>
-        </div>
-        <br>
-        <!--Form footer - button-->
+        </div> 
         <div class="row">
-            <div class="col-md-12">
-              <button class="btn btn btn-light" type="button" onclick="addNewIngredientRow({{ingredients_list}}, 'ingredients_list')"><i class="fas fa-plus add_icon"></i> Ajouter un ingrédient</button>
-            </div>
+            <button class="btn btn-light" type="button" onclick="addNewIngredientRow({{ingredients_list}}, 'ingredients_list')"><i class="fas fa-plus add_icon"></i> Ajouter un ingrédient</button>
         </div>
-        <br>
         <div align="center">
-            <button type="submit" name="register-recipe" class="btn btn-primary">Ajouter la recette</button>
+            <button type="submit" name="register-recipe" class="btn btn-dark">Ajouter la recette</button>
         </div>
     </form>
 
@@ -187,11 +149,11 @@
             </div>
             <div class="modal-body">
               <form>
-                <div class="row">
-                    <div class="col md-6">
+                <div class="row row-modal">
+                    <div>
                         <input type="text" class="form-control" id="ingredient" name="ingredient" placeholder="Nom" required>
                     </div>
-                    <div class="col md-6">
+                    <div>
                         <select type="text" class="form-control" id="unit" name="unit" placeholder="Unité" required>
                         <option value="" disabled selected hidden>Unité</option>
                             <option value="g">Grammes</option>
@@ -204,7 +166,6 @@
                         </select>
                     </div>
                 </div>
-                <br>
                 <div class="alert alert-warning alert-modal-incomplete" role="alert" style="display: none;">
                     Merci d'entrer un nom et une unité.
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -218,7 +179,7 @@
                     </button>
                 </div>                  
                 <div class="modal-footer">
-                    <button type="button" id="" class="btn btn-primary btn-add-ingredient-to-database" onclick="addIngredientToDatabase(this.parentNode.parentNode, {{ingredients_list}})">Enregistrer</button>
+                    <button type="button" id="" class="btn btn-dark btn-add-ingredient-to-database" onclick="addIngredientToDatabase(this.parentNode.parentNode, {{ingredients_list}})">Enregistrer</button>
                 </div>
               </form>
             </div>
