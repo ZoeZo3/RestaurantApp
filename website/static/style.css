@@ -34,6 +34,7 @@ body {
 
 .btn {
     font-family: 'Montserrat', sans-serif;
+    border-radius: 5px;
 }
 
 ul {
@@ -182,21 +183,43 @@ li > a:hover {
     background-color: #e7aa60;
 }
 
-.stock-item-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 10px;
-}
-
 .stock-title {
     font-weight: 600;
 }
 
-.stock-item-line--section {
+#accordion {
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#stocks-listing {
     display: flex;
     align-items: center;
-    width: 25%;
+}
+
+.stock-item-line {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+    width: 80%;
+}
+
+.stock-item-line--section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 15%;
+}
+
+.stock-item-line-quantity--alert {
+    display: none;
+    font-size: 10px;
+    font-style: italic;
+    color: #a21f0a;
+    line-height: 10px;
+    margin-top: 5px
 }
 
 .stock-btn--update {
@@ -210,10 +233,33 @@ li > a:hover {
     height: 40px;
 }
 
+.stock-btn--update:hover {
+    color: #eab676;
+    background-color: #dbdbcf;
+}
+
+.stock-btn--save {
+    display: none;
+    border-radius: 5px;
+    border: solid 1px #23611a;
+    color: #23611a
+}
+
+.stock-btn--save:hover {
+    color: #23611a;
+    background-color: #dbdbcf;
+}
+
+.add-stock-div {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
 #add-stock {
     display: flex;
     justify-content: space-between;
-    margin-right: 100px;
+    margin-top: 30px;
 }
 
 .stock-btn--add {

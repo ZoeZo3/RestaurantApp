@@ -1,5 +1,7 @@
 # RestaurantApp
 
+# Description of the app
+
 # Launch the app
 
 flask --app main run
@@ -18,7 +20,9 @@ MAIL_USERNAME = 'your email adress' --> to send an email from the contact page
 MAIL_PASSWORD = 'your password' --> to send an email from the contact page
 IMPORT_FOLDER = 'static/menu'
 
-# Thoughts
+# Commments on the app
+
+Gestion des unités pourrait être gérée via fichier de config, puis depuis l'interface utilisateur
 
 pip install Flask
 pip install python-dotenv

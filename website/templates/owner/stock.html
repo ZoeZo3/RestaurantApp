@@ -3,56 +3,60 @@
 {% block content%}
     <h1 class="title">Votre inventaire</h1>
     <div id="accordion" class="overflow-auto" style="max-height: 300px;">
-        <ul id="stocks_listing" class="list-group list-group-flush">
-            <li>
-                <div class="stock-item-line">
-                    <div class="stock-item-line--section stock-title">Ingrédient</div>
-                    <div class="stock-item-line--section stock-title">Quantité</div>
-                    <div class="stock-item-line--section stock-title">Unité</div>
-                    <div class="stock-item-line--section stock-title"></div>
-                </div>
+        <ul id="stocks-listing" class="list-group">
+            <li class="stock-item-line">
+                <div class="stock-item-line--section stock-title">Ingrédient</div>
+                <div class="stock-item-line--section stock-title">Quantité</div>
+                <div class="stock-item-line--section stock-title">Unité</div>
+                <div class="stock-item-line--section stock-title"></div>
             </li>
             {% for item in stock %}
-            <li>
-                <div id="item_{{ item.name }}" class="stock-item-line">
-                    <div class="stock-item-line--section">{{ item.name }}</div>
-                    <div class="stock-item-line--section">{{ item.quantity }}</div>
-                    <div class="stock-item-line--section">{{ item.unit }}</div>
-                    <div class="stock-item-line--section">
-                        <button type="button" class="stock-btn--update" onclick="updateStock()">
-                            Modifier
-                        </button>
-                    </div>
+            {% if item.quantity > 0 %}
+            <li id="item_{{ item.id }}" class="stock-item-line">
+                <div class="stock-item-line--section">{{ item.name.capitalize() }}</div>
+                <div class="stock-item-line--section quantity">
+                    {{ item.quantity }}
+                </div>
+                <div class="stock-item-line--section">{{ item.unit }}</div>
+                <div class="stock-item-line--section">
+                    <button type="button" class="btn stock-btn--update" onclick="updateStock(this)">
+                        Modifier
+                    </button>
+                    <button type="button" class="btn stock-btn--save" onclick="saveStock(this)">
+                        Enregistrer
+                    </button>
+                    <p class="stock-item-line-quantity--alert">Merci d'entrer un chiffre avec au plus 1 décimale.</p>
                 </div>
             </li>
-            {% endfor%}
+            {% endif %}
+            {% endfor %}
         </ul>
     </div>
-    <br><br><br>
-    <h3>Ajouter du stock</h3>
-    <br>
-    <form id="add-stock" name="add-stock" method="POST">
-        <div>
-            <select type="text" id="ingredient" name="ingredient" class="form-control selectpicker selectpicker-ingredient" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ ingredients_list }})" title="Sélectionner un ingrédient" required>
-                <option value="add"
-                    data-content='<span class="btn btn-link btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
-                        <i class="fas fa-plus add_icon"></i> Ajouter un nouvel élément</span>'>
-                </option>
-                {% for ingredient in ingredients_list %}
-                <option value={{ingredient.id}}>{{ingredient.name.capitalize()}}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="quantity">
-                <input type="number" id="quantity" name="quantity" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
-        </div>
-        <div class="unit">
-            <label type="text" id="unit" name="unit">-</input>
-        </div>
-        <div class="">
-            <button type="submit" name="register-stock" class="stock-btn--add">Ajouter au stock</button>
-        </div>
-    </form>
+    <div class="add-stock-div">
+        <h3>Ajouter du stock</h3>
+        <form id="add-stock" name="add-stock" method="POST">
+            <div>
+                <select type="text" id="ingredient" name="ingredient" class="form-control selectpicker selectpicker-ingredient" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ ingredients_list }})" title="Sélectionner un ingrédient" required>
+                    <option value="add"
+                        data-content='<span class="btn btn-link btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
+                            <i class="fas fa-plus add_icon"></i> Ajouter un nouvel élément</span>'>
+                    </option>
+                    {% for ingredient in ingredients_list %}
+                    <option value={{ingredient.id}}>{{ingredient.name.capitalize()}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="quantity">
+                    <input type="number" id="quantity" name="quantity" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
+            </div>
+            <div class="unit">
+                <label type="text" id="unit" name="unit">-</input>
+            </div>
+            <div>
+                <button type="submit" name="register-stock" class="btn stock-btn--add">Ajouter au stock</button>
+            </div>
+        </form>
+    </div>
 
     <!-- Modal div to open a popup when registreing new element -->
     <div class="modal fade" id="modal-register-ingredient" tabindex="-1" role="dialog" aria-labelledby="registerIngredient" aria-hidden="true">
@@ -104,9 +108,8 @@
       </div>
 
     <!-- Hidden button to generate the modal divs -->
-    <button type="button" id="button-for-modal-update-recipe" class="btn btn-primary" data-toggle="modal" data-target="#modal-update-recipe" hidden></button>
     <button type="button" id="button-for-modal-register-ingredient" class="btn btn-primary" data-toggle="modal" data-target="#modal-register-ingredient" hidden></button>
     <br>
     <br>
     
-{% endblock%}
+{% endblock %}

@@ -7,7 +7,7 @@ function toTitleCase(str) {
 function deleteRecipe(id) {
     fetch("delete-recipe", {
         method: "POST",
-        body: JSON.stringify({recipeID: id})
+        body: JSON.stringify({id: id})
         } 
     ).then((_res) => {
         window.location.href = "recipes";
@@ -261,5 +261,37 @@ function ingredientSelectUpdate(selector, ingredients_list) {
                 selector.parentElement.parentElement.parentElement.parentElement.getElementsByClassName("unit")[0].getElementsByTagName("label")[0].innerHTML = ingredients_list[i].unit;
             }
         }
+    }
+}
+
+// update stock
+function updateStock(line) {
+    //transform the quantity div into an input and update the button
+    quantity_element = line.parentElement.parentElement.getElementsByClassName("quantity")[0];
+    current_quantity = quantity_element.innerHTML;
+    quantity_element.innerHTML = (`<input type="text" class="form-control" id="quantity" name="quantity" placeholder="${current_quantity}" required>`);
+
+    line.parentElement.parentElement.getElementsByClassName("stock-btn--update")[0].style.display = "none";
+    line.parentElement.parentElement.getElementsByClassName("stock-btn--save")[0].style.display = "block";
+}
+
+// save stock update
+function saveStock(line) {
+    quantity = line.parentElement.parentElement.getElementsByTagName("input")[0].value;
+    ingredient_id = line.parentElement.parentElement.id.split("item_")[1];
+
+    if (quantity && Number.isInteger(quantity*10)) {
+        fetch("update-stock", {
+            method: "POST",
+            body: JSON.stringify({
+                id: ingredient_id,
+                quantity: quantity
+            })
+            } 
+        ).then((_res) => {
+            window.location.href = "stock";
+        });
+    } else {
+        line.parentElement.parentElement.getElementsByClassName("stock-item-line-quantity--alert")[0].style.display = "block"; 
     }
 }

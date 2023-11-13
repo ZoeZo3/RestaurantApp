@@ -142,11 +142,12 @@ def register_ingredient():
 def deleteRecipe():
     recipe = json.loads(request.data)
     # Delete recipe from the Recipe table
-    Recipe.query.filter_by(id=recipe["recipeID"], user_id=current_user.id).delete()
+    Recipe.query.filter_by(id=recipe["id"], user_id=current_user.id).delete()
    
     # Delete ingredients in the recipe from Ingredient_by_recipe table
-    IngredientByRecipe.query.filter_by(recipe_id=recipe["recipeID"]).delete()
+    IngredientByRecipe.query.filter_by(recipe_id=recipe["id"]).delete()
     db.session.commit()
+    print("Recipe deleted")
     return jsonify({})
 
 @owner.route("/sales")
@@ -157,9 +158,21 @@ def sales():
     output = recipe_schema.dump(recipes_list)
     return render_template("owner/sales.html", user=current_user, recipes_list=output)
 
-@owner.route("/stock")
+@owner.route("/stock", methods=["GET", "POST"])
 @login_required
 def stock():
+    if request.method == "POST":
+        ingredient_id = request.form.get("ingredient")
+        quantity = float(request.form.get("quantity"))
+    
+        stock_ingredient = Stock.query.filter_by(id=ingredient_id, user_id=current_user.id).first()
+        if stock_ingredient:
+            stock_ingredient.quantity += quantity
+        else:
+            new_stock_ingredient = Stock(id=ingredient_id, quantity=quantity, user_id = current_user.id)
+            db.session.add(new_stock_ingredient)
+        db.session.commit()
+        
     # get all registred ingredients
     ingredients_list = Ingredient.query.filter_by(user_id=current_user.id).order_by("name")
     ingredients_schema = IngredientSchema(many=True)
@@ -173,3 +186,11 @@ def stock():
 
     # display page
     return render_template("owner/stock.html", user=current_user, ingredients_list=output, stock=stock)
+
+@owner.route("/update-stock", methods=["POST"])
+def updateStock():
+    stock = json.loads(request.data)
+    Stock.query.filter_by(id=stock["id"], user_id=current_user.id).update({'quantity': stock["quantity"] })
+    db.session.commit()
+    print("stock updated")
+    return jsonify({})

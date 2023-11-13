@@ -1,6 +1,6 @@
 {% extends "owner/base.html" %}
-{% block title %} Recettes {% endblock%}
-{% block content%}
+{% block title %} Recettes {% endblock %}
+{% block content %}
     <h1 class="title">Vos recettes</h1>
     <div id="accordion" class="overflow-auto" style="max-height: 300px;">
         <ul id="recipes_listing" class="list-group list-group-flush">
@@ -34,7 +34,7 @@
                                 <li class="list-group-item">{{ ingredient.name }} : {{'{0:g}'.format(ingredient.quantity)}} {{ ingredient.unit }}</li>
                                 <!-- {{recipe_ingredients_dict["ingredients"].append({"id": ingredient.id, "name": ingredient.name, "quantity": ingredient.quantity, "unit": ingredient.unit})}} -->
                                     {% endif %}
-                                {%endfor%}
+                                {%endfor %}
                                 <li class="list-group-item">
                                     <button type="button" class="btn btn-outline-primary" onclick="updateRecipe({{ ingredients_list }}, {{ recipe_ingredients_dict }})">Modifier</button>
                                 </li>
@@ -43,7 +43,7 @@
                         </div>
                     </div>
             </li>
-            {% endfor%}
+            {% endfor %}
         </ul>
     </div>
     <br>
@@ -231,4 +231,4 @@
     <br>
     <br>
     
-{% endblock%}
+{% endblock %}
