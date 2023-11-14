@@ -3,37 +3,34 @@
 {% block content %}
     <h1 class="title">Vos recettes</h1>
     <div id="accordion" class="overflow-auto" style="max-height: 300px;">
-        <ul id="recipes_listing" class="list-group">
+        <ul id="recipes-listing" class="list-group">
             {% for recipe in recipes %}
-            <li id="recipe_{{ recipe.id }}">
-                <div class="recipe-line">
-                    <div class="recipe-text">
-                        <div>{{ recipe.name.capitalize() }}</div>
-                        <div class="recipe-description">{{ recipe.description }}</div>
-                        <div id="collapse_{{ recipe.id }}" class="collapse" aria-labelledby="recipe_ {{recipe.id }}" data-parent="#accordion">
-                                <ul>
-                                    {% set recipe_ingredients_dict = {"id": recipe.id, "name": recipe.name, "description": recipe.description, "ingredients": []} %}
-                                    {% for ingredient in ingredients_by_recipe %}
-                                        {% if ingredient.recipe_id == recipe.id %}
-                                    <li class="list-group-item">{{ ingredient.name }} : {{'{0:g}'.format(ingredient.quantity)}} {{ ingredient.unit }}{% if ingredient.unit == "unité" and ingredient.quantity > 1 %}s{% endif %}</li>
-                                        {% endif %}
-                                    {%endfor %}
-                                    <li class="list-group-item">
-                                        <button type="button" class="btn btn-green btn-sm" onclick="updateRecipe({{ ingredients_list }}, {{ recipe_ingredients_dict }})" style="margin-bottom: 15px;">Modifier</button>
-                                    </li>
-                                </ul>
-                        </div>
-                    </div>
-                    <div class="recipe-buttons">
-                        <button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#collapse_{{ recipe.id }}" aria-expanded="true" aria-controls="collapse_{{ recipe.id }}">
-                            Détails
-                        </button>
-                        <button type="button" class="btn btn-dark btn-sm" onclick="deleteRecipe({{ recipe.id }})">
-                            Supprimer
-                        </button>
+            <li id="recipe_{{ recipe.id }}" class="recipe-line">
+                <div class="recipe-text">
+                    <div>{{ recipe.name.capitalize() }}</div>
+                    <div class="recipe-description">{{ recipe.description }}</div>
+                    <div id="collapse_{{ recipe.id }}" class="collapse" aria-labelledby="recipe_ {{recipe.id }}" data-parent="#accordion">
+                            <ul>
+                                {% set recipe_ingredients_dict = {"id": recipe.id, "name": recipe.name, "description": recipe.description, "ingredients": []} %}
+                                {% for ingredient in ingredients_by_recipe %}
+                                    {% if ingredient.recipe_id == recipe.id %}
+                                <li class="list-group-item">{{ ingredient.name }} : {{'{0:g}'.format(ingredient.quantity)}} {{ ingredient.unit }}{% if ingredient.unit == "unité" and ingredient.quantity > 1 %}s{% endif %}</li>
+                                    {% endif %}
+                                {%endfor %}
+                                <li class="list-group-item">
+                                    <button type="button" class="btn btn-green btn-sm" onclick="updateRecipe({{ ingredients_list }}, {{ recipe_ingredients_dict }})" style="margin-bottom: 15px;">Modifier</button>
+                                </li>
+                            </ul>
                     </div>
                 </div>
-                <hr style="margin: 0px 30px;">
+                <div class="recipe-buttons">
+                    <button type="button" class="btn btn-light btn-sm" data-toggle="collapse" data-target="#collapse_{{ recipe.id }}" aria-expanded="true" aria-controls="collapse_{{ recipe.id }}">
+                        Détails
+                    </button>
+                    <button type="button" class="btn btn-dark btn-sm" onclick="deleteRecipe({{ recipe.id }})">
+                        Supprimer
+                    </button>
+                </div>                
             </li>
             {% endfor %}
         </ul>

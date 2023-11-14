@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link
         rel="stylesheet"
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -35,34 +35,47 @@
 
     <body>
         <nav class="nav navbar-expand-lg navbar-dark bg-dark" id="global-navbar">
-            <div class="burger-menu">
-            <button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#navbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbar">
-                <div class="navbar-nav">
-                    {% if user.is_authenticated %}
-                    <a class="nav-item nav-link" id="home" href="/owner/">Accueil</a>
-                    <a class="nav-item nav-link" id="menu" href="/owner/menu">Menu</a>
-                    <a class="nav-item nav-link" id="stocks" href="/owner/stock">Stocks</a>
-                    <a class="nav-item nav-link" id="recipes" href="/owner/recipes">Recettes</a>
-                    <a class="nav-item nav-link" id="sales" href="/owner/sales">Ventes</a>
-                    {% else %}
-                    <a class="nav-item nav-link" id="homepage" href="/">Homepage</a>
-                    <div class="navbar-nav nav-right">
-                        <a class="nav-item nav-link" id="login" href="/login">Login</a>
-                        <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
-                    </div>
-                    {% endif %}
+            <div class="left-side-nav">
+                <div class="burger-menu">
+                    <button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#navbar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar">
+                    <ul class="navbar-nav ml-auto">
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-item nav-link" id="home" href="/owner/">Accueil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-item nav-link" id="menu" href="/owner/menu">Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-item nav-link" id="stocks" href="/owner/stock">Stocks</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-item nav-link" id="recipes" href="/owner/recipes">Recettes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-item nav-link" id="sales" href="/owner/sales">Ventes</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-item nav-link" id="homepage" href="/">Homepage</a>
+                        </li>
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
+            <div class="navbar-nav nav-right">
+                {% if user.is_authenticated %}
+                <a class="nav-item nav-link" id="logout" href="/logout">Profile</a>
+                <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+                {% else %}
+                <a class="nav-item nav-link" id="login" href="/login">Login</a>
+                <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+                {% endif %}
             </div>
-            {% if user.is_authenticated %}
-                <div class="navbar-nav nav-right">
-                    <a class="nav-item nav-link" id="logout" href="/logout">Profile</a>
-                    <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
-                </div>
-            {% endif %}
         </nav>
         <br/>
 

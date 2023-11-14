@@ -242,11 +242,12 @@ function addNewRecipeRow(recipes_list, div_id, id) {
 function updateStock(line) {
     //transform the quantity div into an input and update the button
     quantity_element = line.parentElement.parentElement.getElementsByClassName("quantity")[0];
-    current_quantity = quantity_element.innerHTML;
+    current_quantity = parseFloat(quantity_element.innerHTML);
+    console.log(current_quantity)
     quantity_element.innerHTML = (`<input type="text" class="form-control" id="quantity" name="quantity" placeholder="${current_quantity}" required>`);
 
     line.parentElement.parentElement.getElementsByClassName("stock-btn--update")[0].style.display = "none";
-    line.parentElement.parentElement.getElementsByClassName("stock-btn--save")[0].style.display = "block";
+    line.parentElement.parentElement.getElementsByClassName("stock-btn--save")[0].style.display = "flex";
 }
 
 // save stock update
