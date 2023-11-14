@@ -23,40 +23,93 @@
     <h6>Sélectionnez les plats qui sont actuellement au menu :</h6>
     <br>
     <form method="POST">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Entrées</h5>
-                <div id="starters">
-                    <select type="text" id="ingredient_1" name="ingredient_1" class="form-control selectpicker selectpicker-ingredient_1" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ingredients_list}})" title="Sélectionner un ingrédient" required>
-                        {% for recipe in recipes_list %}
-                        <option value={{recipe.id}}>{{recipe.name.capitalize()}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                      <button class="btn btn-light" type="button" onclick="addNewRecipeRow('sa', starters, 'ingredient_1')"><i class="fas fa-plus add_icon"></i> Ajouter une recette</button>
-                    </div>
-                </div>
-            </div>  
+        <div class="menu-section card card-body">
+            <h5 class="card-title">Entrées</h5>
+            <div id="startersList">
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        addNewRow('{{ recipes_list | tojson | safe }}', 'startersList', 'menuRecipeStarter');
+                    });
+                </script>
+            </div>
+            <div class="row">
+                <button class="btn btn-light" type="button" id="addRowButtonStarters">
+                    <i class="fas fa-plus add_icon"></i> Ajouter
+                </button>
+                <script>
+                    var addButton = document.getElementById('addRowButtonStarters');
+                    addButton.addEventListener('click', function () {
+                        addNewRow('{{ recipes_list | tojson | safe }}', 'startersList', 'menuRecipeStarter');
+                    });
+                </script>
+            </div> 
         </div>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Plats</h5>
-            </div>  
+        <div class="menu-section card card-body">
+            <h5 class="card-title">Plats</h5>
+            <div id="dishesList">
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        addNewRow('{{ recipes_list | tojson | safe }}', 'dishesList', 'menuRecipeDish');
+                    });
+                </script>
+            </div>
+            <div class="row">
+                <button class="btn btn-light" type="button" id="addRowButtonDishes">
+                    <i class="fas fa-plus add_icon"></i> Ajouter
+                </button>
+                <script>
+                    var addButton = document.getElementById('addRowButtonDishes');
+                    addButton.addEventListener('click', function () {
+                        addNewRow('{{ recipes_list | tojson | safe }}', 'dishesList', 'menuRecipeDish');
+                    });
+                </script>
+            </div> 
         </div>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Desserts</h5>
-            </div>  
+        <div class="menu-section card card-body">
+            <h5 class="card-title">Desserts</h5>
+            <div id="dessertsList">
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        addNewRow('{{ recipes_list | tojson | safe }}', 'dessertsList', 'menuRecipeDessert');
+                    });
+                </script>
+            </div>
+            <div class="row">
+                <button class="btn btn-light" type="button" id="addRowButtonDesserts">
+                    <i class="fas fa-plus add_icon"></i> Ajouter
+                </button>
+                <script>
+                    var addButton = document.getElementById('addRowButtonDesserts');
+                    addButton.addEventListener('click', function () {
+                        addNewRow('{{ recipes_list | tojson | safe }}', 'dessertsList', 'menuRecipeDessert');
+                    });
+                </script>
+            </div> 
         </div>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Boissons</h5>
-            </div>  
+        <div class="menu-section card card-body">
+            <h5 class="card-title">Boissons</h5>
+            <div id="drinksList">
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        addNewRow('{{ recipes_list | tojson | safe }}', 'drinksList', 'menuRecipeDrink');
+                    });
+                </script>
+            </div>
+            <div class="row">
+                <button class="btn btn-light" type="button" id="addRowButtonDrinks">
+                    <i class="fas fa-plus add_icon"></i> Ajouter
+                </button>
+                <script>
+                    var addButton = document.getElementById('addRowButtonDrinks');
+                    addButton.addEventListener('click', function () {
+                        addNewRow('{{ recipes_list | tojson | safe }}', 'drinksList', 'menuRecipeDrink');
+                    });
+                </script>
+            </div> 
         </div>
+        <br>
         <div>
-            <button type="submit" class="btn btn-dark">Enregistrer</button>
+            <p class="btn btn-dark">Enregistrer le menu</p>
         </div>
     </form>
 {% endblock %}

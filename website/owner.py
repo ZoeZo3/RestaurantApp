@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
-from .models import Ingredient, IngredientSchema, Recipe, RecipeSchema, IngredientByRecipe, Stock
+from .models import Ingredient, IngredientSchema, Recipe, RecipeSchema, IngredientByRecipe, IngredientByRecipeSchema, Stock, Sales
 from . import db, owner, ma
 import json
 from werkzeug.utils import secure_filename
 import os
+from datetime import datetime
 
 owner = Blueprint("owner", __name__)
 
@@ -35,7 +36,7 @@ def menu():
 def recipes():
     if request.method == "POST":
         #if the form sent is the one to add new recipe
-        if "register-recipe" in request.form:
+        if "registerRecipe" in request.form:
             name = request.form.get("name").lower()
             #check if recipe already exists
             recipe = Recipe.query.filter_by(name=name).first()
@@ -65,7 +66,8 @@ def recipes():
                     print("Ingredient added")
                 flash("Recette ajoutée !", category="success")
         # if the form sent is the one to update recipes
-        elif "update-recipe" in request.form:
+        elif "registerRecipeModal" in request.form:
+            print("todo")
             id = request.form.get("id")
             name = request.form.get("name").lower()
             description = request.form.get("description")
@@ -150,9 +152,30 @@ def deleteRecipe():
     print("Recipe deleted")
     return jsonify({})
 
-@owner.route("/sales")
+@owner.route("/sales", methods=["GET", "POST"])
 @login_required
 def sales():
+    if request.method == "POST":
+        nb_items = int((len(request.form) - 1) / 2)
+        for i in range(nb_items):
+            recipe_id = request.form.get("recipe_" + str(i+1))
+            recipe_quantity = float(request.form.get("quantity_" + str(i+1)))
+
+            # register the sale
+            new_sale = Sales(recipe_id=recipe_id, date=datetime.now(), quantity=recipe_quantity, user_id=current_user.id )
+            db.session.add(new_sale)
+
+            # get the ingredients used
+            ingredients = IngredientByRecipe.query.filter_by(recipe_id=recipe_id).all()
+            for ingredient in ingredients:
+                ingredient_stock = Stock.query.filter_by(id=ingredient.id, user_id=current_user.id).first()
+                # update the stock table
+                if ingredient_stock:
+                    ingredient_stock.quantity -= ingredient.quantity * recipe_quantity
+        
+        db.session.commit()
+        flash("Vente enregistrée, stock mis à jour !", category="success")
+
     recipes_list = Recipe.query.filter_by(user_id=current_user.id)
     recipe_schema = RecipeSchema(many=True)
     output = recipe_schema.dump(recipes_list)
@@ -162,8 +185,8 @@ def sales():
 @login_required
 def stock():
     if request.method == "POST":
-        ingredient_id = request.form.get("ingredient")
-        quantity = float(request.form.get("quantity"))
+        ingredient_id = request.form.get("ingredient_1")
+        quantity = float(request.form.get("quantity_1"))
     
         stock_ingredient = Stock.query.filter_by(id=ingredient_id, user_id=current_user.id).first()
         if stock_ingredient:
@@ -182,6 +205,7 @@ def stock():
     stock = db.session.query(Stock.id, Ingredient.name, Ingredient.unit, Stock.quantity)\
         .filter(Stock.user_id==current_user.id)\
         .filter(Stock.id==Ingredient.id).filter(Stock.user_id==Ingredient.user_id)\
+        .order_by(Ingredient.name)\
         .all()
 
     # display page

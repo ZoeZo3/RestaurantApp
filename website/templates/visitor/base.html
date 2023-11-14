@@ -33,7 +33,7 @@
     </head>
 
     <body>
-        <nav class="nav navbar-expand-lg navbar-dark bg-dark" id="global-navbar">
+        <nav class="nav navbar-expand-lg navbar-dark bg-dark" id="globalNavbar">
             <div class="nav-left">
                 <div class="burger-menu">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
@@ -94,9 +94,7 @@
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"
         ></script>
-        <script
-        type="text/javascript"
-        src="{{ url_for('static', filename='index.js') }}"
-      ></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='utils.js') }}"></script>
     </body>
 </html>

@@ -3,7 +3,7 @@
 {% block content %}
     <h1 class="title">Vos recettes</h1>
     <div id="accordion" class="overflow-auto" style="max-height: 300px;">
-        <ul id="recipes-listing" class="list-group">
+        <ul id="recipesListing" class="list-group">
             {% for recipe in recipes %}
             <li id="recipe_{{ recipe.id }}" class="recipe-line">
                 <div class="recipe-text">
@@ -11,14 +11,20 @@
                     <div class="recipe-description">{{ recipe.description }}</div>
                     <div id="collapse_{{ recipe.id }}" class="collapse" aria-labelledby="recipe_ {{recipe.id }}" data-parent="#accordion">
                             <ul>
-                                {% set recipe_ingredients_dict = {"id": recipe.id, "name": recipe.name, "description": recipe.description, "ingredients": []} %}
+                                {% set recipe_ingredients_dict = {
+                                    "id": recipe.id,
+                                    "name": recipe.name,
+                                    "description": recipe.description,
+                                    "ingredients": []}
+                                %}
                                 {% for ingredient in ingredients_by_recipe %}
                                     {% if ingredient.recipe_id == recipe.id %}
+                                        {% set _ = recipe_ingredients_dict.ingredients.append({"id": ingredient.id, "name": ingredient.name, "quantity": ingredient.quantity, "unit": ingredient.unit}) %}
                                 <li class="list-group-item">{{ ingredient.name }} : {{'{0:g}'.format(ingredient.quantity)}} {{ ingredient.unit }}{% if ingredient.unit == "unité" and ingredient.quantity > 1 %}s{% endif %}</li>
                                     {% endif %}
                                 {%endfor %}
                                 <li class="list-group-item">
-                                    <button type="button" class="btn btn-green btn-sm" onclick="updateRecipe({{ ingredients_list }}, {{ recipe_ingredients_dict }})" style="margin-bottom: 15px;">Modifier</button>
+                                    <button type="button" class="btn btn-green btn-sm" onclick="updateRecipeModal({{ recipe_ingredients_dict }})" style="margin-bottom: 15px;">Modifier</button>
                                 </li>
                             </ul>
                     </div>
@@ -36,51 +42,21 @@
         </ul>
     </div>
     <h1 align="center" style="margin-top: 70px; margin-bottom: 50px;">Ajouter une recette</h1>
-    <form id="add-recipe" name="add-recipe" method="POST">
-        <div class="row" style="margin-bottom: 40px;"">
-            <input type="text" id="name" name="name" class="form-control recipe-header" placeholder="Nom" required>
-            <input type="text" id="description" name="description" class="form-control recipe-header" placeholder="Descriptif" required>
-        </div>
-        <div class="row" style="margin-bottom: 10px;">
-            <div class="form-header" style="width: 40%">Ingrédient</div>
-            <div class="form-header" style="width: 20%">Quantité</div>
-            <div class="form-header" style="width: 20%">Unité</div>
-            <div style="width: 5%"></div>
-        </div>   
-        <div id="ingredients_list">
-            <div class="row">
-                <div style="width: 40%">
-                    <select type="text" id="ingredient_1" name="ingredient_1" class="form-control selectpicker selectpicker-ingredient_1" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ingredients_list}})" title="Sélectionner un ingrédient" required>
-                        <option value="add"
-                            data-content='<span class="btn btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
-                                <i class="fas fa-plus add_icon"></i> Ajouter un nouvel élément</span>'>
-                        </option>
-                        {% for ingredient in ingredients_list %}
-                        <option value={{ingredient.id}}>{{ingredient.name.capitalize()}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div style="width: 20%">
-                    <input type="number" id="quantity_1" name="quantity_1" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
-                </div>
-                <div class="unit" style="width: 20%">
-                    <label type="text" id="unit_1" name="unit_1">-</input>
-                </div>
-                <button class="close" type="button" onclick="deleteRow(this)">
-                    <span>&times;</span>
-                </button>
-            </div>
-        </div> 
-        <div class="row">
-            <button class="btn btn-light" type="button" onclick="addNewIngredientRow({{ingredients_list}}, 'ingredients_list')"><i class="fas fa-plus add_icon"></i> Ajouter un ingrédient</button>
-        </div>
-        <div align="center">
-            <button type="submit" name="register-recipe" class="btn btn-dark">Ajouter la recette</button>
-        </div>
-    </form>
+    <div id="bodyRecipe" class="body-recipe">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                addRecipeForm("");
+                addNewRow('{{ ingredients_list | tojson | safe }}', 'ingredientsList', 'ingredient');
+                var addButton = document.getElementById('addRowButton');
+                addButton.addEventListener('click', function () {
+                    addNewRow('{{ ingredients_list | tojson | safe }}', 'ingredientsList', 'ingredient');
+                });
+            });
+        </script>
+    </div>
 
-    <!-- Modal div to open a popup when updating recipe -->
-    <div class="modal fade" id="modal-update-recipe" tabindex="-1" role="dialog" aria-labelledby="updateRecipe" aria-hidden="true">
+    <!-- Update recipe modal -->
+    <div class="modal fade" id="modalUpdateRecipe" tabindex="-1" role="dialog" aria-labelledby="modalUpdateRecipe" aria-hidden="true">
         <div class="modal-dialog modal-content" role="document">
             <div class="modal-header">
                 <h5 class="modal-title" id="updateRecipe">Modifier la recette</h5>
@@ -89,103 +65,31 @@
                 </button>
             </div>
             <br>
-            <div id="modal-body-recipe" class="modal-body-recipe">
-                <form  id="update-recipe" name="update-recipe" method="POST">
-                <!--Global recipe info-->
-                <div class="row">
-                    <div class="col-md-6">
-                            <input type="text" id="name_modal" name="name" class="form-control" placeholder="Nom" required>
-                            <input type="hidden" id="id_modal" name="id">
-                    </div>
-                    <div class="col-md-6">
-                        <div>
-                            <input type="text" id="description_modal" name="description" class="form-control" placeholder="Descriptif" required>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <!--Headers-->
-                <div class="row">
-                    <div class="col-md-5">
-                        <label class="form-header">Ingrédient</label>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-header">Quantité</label>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-header">Unité</label>
-                    </div>
-                </div>
-                <!--Form body-->
-                <div id="ingredients_list_modal"></div>
-                <br>
-                <!--Add new row button-->
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn btn-light" type="button" onclick="addNewIngredientRow({{ingredients_list}}, 'ingredients_list_modal')"><i class="fas fa-plus add_icon"></i> Ajouter un ingrédient</button>
-                    </div>
-                </div>
-                <br>
-                <!--Form footer-->
-                <div class="modal-footer">
-                    <button type="submit" name="update-recipe" class="btn btn-primary">Enregistrer les modifications</button>
-                </div>
-                </form>
-            </div>
-        </div>
-      </div>
-    
-    <!-- Modal div to open a popup when registreing new element -->
-    <div class="modal fade" id="modal-register-ingredient" tabindex="-1" role="dialog" aria-labelledby="registerIngredient" aria-hidden="true">
-        <div class="modal-dialog modal-content" role="document">
-            <div class="modal-header">
-              <h5 class="modal-title" id="regsiterIngredient">Enregistrer un ingrédient</h5>
-              <button type="button" class="close close-modal-ingredient" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form>
-                <div class="row row-modal">
-                    <div>
-                        <input type="text" class="form-control" id="ingredient" name="ingredient" placeholder="Nom" required>
-                    </div>
-                    <div>
-                        <select type="text" class="form-control" id="unit" name="unit" placeholder="Unité" required>
-                        <option value="" disabled selected hidden>Unité</option>
-                            <option value="g">Grammes</option>
-                            <option value="kg">Kilogrammes</option>
-                            <option value="L">Litres</option>
-                            <option value="mL">Millilitres</option>
-                            <option value="cuillère">cuillère</option>
-                            <option value="pincée">pincée</option>
-                            <option value="unité">unité</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="alert alert-warning alert-modal-incomplete" role="alert" style="display: none;">
-                    Merci d'entrer un nom et une unité.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div> 
-                <div class="alert alert-warning alert-modal-exists" role="alert" style="display: none;">
-                    Cet ingrédient existe déjà.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>                  
-                <div class="modal-footer">
-                    <button type="button" id="" class="btn btn-dark btn-add-ingredient-to-database" onclick="addIngredientToDatabase(this.parentNode.parentNode, {{ingredients_list}})">Enregistrer</button>
-                </div>
-              </form>
+            <div id="bodyRecipeModal" class="modal-body-recipe">
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        addRecipeForm("Modal");
+                        var addButtonModal = document.getElementById('addRowButtonModal');
+                        addButtonModal.addEventListener('click', function () {
+                            addNewRow('{{ ingredients_list | tojson | safe }}', 'ingredientsListModal', 'ingredientModal');
+                        });
+                    });
+                </script>
             </div>
         </div>
       </div>
 
-    <!-- Hidden button to generate the modal divs -->
-    <button type="button" id="button-for-modal-update-recipe" class="btn btn-primary" data-toggle="modal" data-target="#modal-update-recipe" hidden></button>
-    <button type="button" id="button-for-modal-register-ingredient" class="btn btn-primary" data-toggle="modal" data-target="#modal-register-ingredient" hidden></button>
+    <!-- New ingredient modal -->
+    <div class="modal fade" id="modalRegisterIngredient" tabindex="-1" role="dialog" aria-labelledby="registerIngredient" aria-hidden="true"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            createModalNewIngredient(document.getElementById("modalRegisterIngredient"));
+        });
+    </script>
+
+    <!-- Hidden buttons to generate the modal divs -->
+    <button type="button" id="buttonForModalUpdateRecipe" class="btn btn-primary" data-toggle="modal" data-target="#modalUpdateRecipe" hidden></button>
+    <button type="button" id="buttonForModalRegisterIngredient" class="btn btn-primary" data-toggle="modal" data-target="#modalRegisterIngredient" hidden></button>
     <br>
     <br>
     

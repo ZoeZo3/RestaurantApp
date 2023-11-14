@@ -1,14 +1,13 @@
 body {
     font-family: 'Montserrat', sans-serif;
     background-color: #eeeee4;
-    overflow: scroll;
 }
 
 .navbar-toggler {
     height: 100%;
 }
 
-#global-navbar {
+#globalNavbar {
     background-color: #eab676 !important;
     display: flex;
     justify-content: space-between;
@@ -100,6 +99,19 @@ li > a:hover {
     text-decoration: none;
 }
 
+.overflow-auto::-webkit-scrollbar {
+    width: 8px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb {
+    background-color: #c5c3c3;
+    border-radius: 6px;
+}
+  
+.overflow-auto::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
 .homepage-text {
     font-size: 20px;
 }
@@ -129,13 +141,20 @@ li > a:hover {
     display: flex;
     flex-direction: column;
     margin-top: 20px;
-    gap: 30px;
+    gap: 10%;
+    width: 50%;
+}
+
+.upload-menu--form > form {
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
 }
 
 .upload-menu--form > form > input[type="submit"] {
     background-color: #eab676;
     color: #fff;
-    padding: 10px 20px;
+    padding: 2%;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -147,14 +166,12 @@ li > a:hover {
 
 .upload-menu--overview {
     display: flex;
-    max-width: 45%;
+    width: 50%;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    padding: 20px 10px;
-    margin-right: 30px;
     background-color: #deded5;
     border-radius: 15px;
+    padding: 4%;
 }
 
 .center-form {
@@ -163,28 +180,23 @@ li > a:hover {
 }
 
 .form-header {
-    margin-left: 5px;
-}
-
-.close {
-    margin-top: 7px;
-    margin-right: 30px;
+    margin-left: 10px;
 }
 
 .filter-option {
     color: #6d757d;
 }
 
-#recipes-listing {
+#recipesListing {
     display: flex;
 }
 
-#recipes-listing > li {
+#recipesListing > li {
     background: #e9e9e9;
     border-radius: 5px;
 }
 
-#recipes-listing > li:nth-child(odd) {
+#recipesListing > li:nth-child(odd) {
     background: #f5dabb;
 }
 
@@ -200,11 +212,18 @@ li > a:hover {
     border: none;
     padding: 0px;
     font-size: 14px;
+    line-height: 1.8em;
 }
 
 .recipe-description {
     font-style: italic;
     font-size: smaller;
+}
+
+.ingredient-row-element {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn-add-ingredient {
@@ -213,10 +232,16 @@ li > a:hover {
     border-color: #6d757d;
 }
 
-#add-recipe {
+#addRecipe {
     display: flex;
     flex-direction: column;
     margin: 20px;
+}
+
+.modal-body-recipe {
+    display: flex;
+    justify-content: center;
+    margin: 5%;
 }
 
 .row {
@@ -242,6 +267,12 @@ li > a:hover {
     margin-bottom: 10px;
 }
 
+.footer-btn {
+    display: flex;
+    justify-content: right;
+    margin-right: 6%;
+}
+
 .contact-send > a{
     background-color: #eab676;
     color: #eeeee4;
@@ -261,17 +292,24 @@ li > a:hover {
     font-weight: 600;
 }
 
-#stocks-listing {
+.stock-list-title {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.stocks-listing {
     display: flex;
     align-items: center;
 }
 
-#stocks-listing > li {
+.stocks-listing > li {
     background: #e9e9e9;
     border-radius: 5px;
 }
 
-#stocks-listing > li:nth-child(odd) {
+.stocks-listing > li:nth-child(odd) {
     background: #f5dabb;
 }
 
@@ -336,7 +374,7 @@ li > a:hover {
     margin-top: 50px;
 }
 
-#add-stock {
+#addStock {
     display: flex;
     justify-content: space-between;
     margin-top: 30px;

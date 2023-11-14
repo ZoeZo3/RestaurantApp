@@ -2,39 +2,17 @@
 {% block title %} Stock {% endblock%}
 {% block content%}
     <h1 class="title">Votre inventaire</h1>
-    <div id="accordion" class="overflow-auto" style="max-height: 300px;">
-        <ul id="stocks-listing" class="list-group">
-            <li class="stock-item-line stock-item-header">
-                <div class="stock-item-line--section stock-title stock-item-section--name">Ingrédient</div>
-                <div class="stock-item-line--section stock-title">Quantité</div>
-                <div class="stock-item-line--section stock-title">Unité</div>
-                <div class="stock-item-line--section stock-title stock-item-section--buttons"></div>
-            </li>
-            {% for item in stock %}
-            {% if item.quantity > 0 %}
-            <li id="item_{{ item.id }}" class="stock-item-line">
-                <div class="stock-item-line--section stock-item-section--name">{{ item.name.capitalize() }}</div>
-                <div class="stock-item-line--section quantity">{{ '{0:g}'.format(item.quantity) }}</div>
-                <div class="stock-item-line--section">{{ item.unit }}</div>
-                <div class="stock-item-line--section stock-item-section--buttons">
-                    <button type="button" class="btn btn-light stock-btn--update" onclick="updateStock(this)">
-                        Modifier
-                    </button>
-                    <button type="button" class="btn btn-green stock-btn--save" onclick="saveStock(this)">
-                        Enregistrer
-                    </button>
-                    <p class="stock-item-line-quantity--alert">Merci d'entrer un chiffre avec au plus 1 décimale.</p>
-                </div>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
+    {%- set stock_dict_list = [] -%}
+    {%- for item in stock -%}
+        {%- set item_dict = item._asdict() -%}
+        {%- set _ = stock_dict_list.append(item_dict) -%}
+    {%- endfor -%}
+
     <div class="add-stock-div">
         <h3>Ajouter du stock</h3>
-        <form id="add-stock" name="add-stock" method="POST">
+        <form id="addStock" name="add-stock" method="POST">
             <div class="add-stock-element" style="width: 30%">
-                <select type="text" id="ingredient" name="ingredient" class="form-control selectpicker selectpicker-ingredient" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ ingredients_list }})" title="Sélectionner un ingrédient" required>
+                <select type="text" id="ingredient_1" name="ingredient_1" class="form-control selectpicker selectpicker-ingredient" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ ingredients_list }})" title="Sélectionner un ingrédient" required>
                     <option value="add"
                         data-content='<span class="btn btn-link btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
                             <i class="fas fa-plus add_icon"></i> Ajouter un nouvel élément</span>'>
@@ -45,7 +23,7 @@
                 </select>
             </div>
             <div class="add-stock-element quantity" style="width: 15%">
-                    <input type="number" id="quantity" name="quantity" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
+                    <input type="number" id="quantity_1" name="quantity_1" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
             </div>
             <div class="unit add-stock-element" style="width: 15%">
                 <label type="text" id="unit" name="unit">-</input>
@@ -56,57 +34,34 @@
         </form>
     </div>
 
-    <!-- Modal div to open a popup when registreing new element -->
-    <div class="modal fade" id="modal-register-ingredient" tabindex="-1" role="dialog" aria-labelledby="registerIngredient" aria-hidden="true">
-        <div class="modal-dialog modal-content" role="document">
-            <div class="modal-header">
-              <h5 class="modal-title" id="regsiterIngredient">Enregistrer un ingrédient</h5>
-              <button type="button" class="close close-modal-ingredient" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form>
-                <div class="row">
-                    <div class="col md-6">
-                        <input type="text" class="form-control" id="ingredient" name="ingredient" placeholder="Nom" required>
-                    </div>
-                    <div class="col md-6">
-                        <select type="text" class="form-control" id="unit" name="unit" placeholder="Unité" required>
-                        <option value="" disabled selected hidden>Unité</option>
-                            <option value="g">Grammes</option>
-                            <option value="kg">Kilogrammes</option>
-                            <option value="L">Litres</option>
-                            <option value="mL">Millilitres</option>
-                            <option value="cuillère">cuillère</option>
-                            <option value="pincée">pincée</option>
-                            <option value="unité">unité</option>
-                        </select>
-                    </div>
-                </div>
-                <br>
-                <div class="alert alert-warning alert-modal-incomplete" role="alert" style="display: none;">
-                    Merci d'entrer un nom et une unité.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div> 
-                <div class="alert alert-warning alert-modal-exists" role="alert" style="display: none;">
-                    Cet ingrédient existe déjà.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>                  
-                <div class="modal-footer">
-                    <button type="button" id="" class="btn btn-primary btn-add-ingredient-to-database" onclick="addIngredientToDatabase(this.parentNode.parentNode, {{ingredients_list}})">Enregistrer</button>
-                </div>
-              </form>
-            </div>
-        </div>
-      </div>
+    <h3 class="stock-list-title">Alerte sur les stocks bas</h3>
+    <div id="accordionAlert" class="overflow-auto" style="max-height: 300px;">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                createStockAccordion(document.getElementById("accordionAlert"), '{{ stock_dict_list  | tojson | safe  }}', "<=0");
+            });
+        </script>
+    </div>
+        
+    <h3 class="stock-list-title">Reste de l'inventaire</h3>
+    <div id="accordionOk" class="overflow-auto" style="max-height: 300px;">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                createStockAccordion(document.getElementById("accordionOk"), '{{ stock_dict_list  | tojson | safe  }}', ">0");
+            });
+        </script>
+    </div>
+
+    <!-- New ingredient modal -->
+    <div class="modal fade" id="modalRegisterIngredient" tabindex="-1" role="dialog" aria-labelledby="registerIngredient" aria-hidden="true"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            createModalNewIngredient(document.getElementById("modalRegisterIngredient"));
+        });
+    </script>
 
     <!-- Hidden button to generate the modal divs -->
-    <button type="button" id="button-for-modal-register-ingredient" class="btn btn-primary" data-toggle="modal" data-target="#modal-register-ingredient" hidden></button>
+    <button type="button" id="buttonForModalRegisterIngredient" class="btn btn-primary" data-toggle="modal" data-target="#modalRegisterIngredient" hidden></button>
     <br>
     <br>
     

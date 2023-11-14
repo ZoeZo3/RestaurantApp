@@ -1,0 +1,35 @@
+{% extends "owner/base.html" %}
+{% block title %} Ventes {% endblock %}
+{% block content %}
+    <h1 class="title">Enregistrez vos ventes</h1>
+    <form id="addSale" name="add-sale" method="POST">
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="form-header" style="width: 40%">Recette</div>
+            <div class="form-header" style="width: 20%">Quantité vendue</div>
+            <div style="width: 5%"></div>
+        </div>   
+        <div id="recipesList">
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    addNewRow('{{ recipes_list | tojson | safe }}', 'recipesList', 'recipe');
+                });
+            </script>
+        </div> 
+        <div class="row">
+            <button class="btn btn-light" type="button" id="addRowButton">
+                <i class="fas fa-plus add_icon"></i> Ajouter une ligne
+            </button>
+            <script>
+                var addButton = document.getElementById('addRowButton');
+                addButton.addEventListener('click', function () {
+                    addNewRow('{{ recipes_list | tojson | safe }}', 'recipesList', 'recipe');
+                });
+            </script>
+        </div>
+        <div align="center">
+            <button type="submit" name="register-sale" class="btn btn-dark">Enregistrer la vente</button>
+        </div>
+    </form>
+
+    
+{% endblock %}

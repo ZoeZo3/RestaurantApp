@@ -36,13 +36,30 @@ class IngredientByRecipe(db.Model):
     quantity = db.Column(db.Float)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
 
+class IngredientByRecipeSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Recipe
+        include_fk = True
+
 class Stock(db.Model):
     line = db.Column(db.Integer, primary_key=True)
     id = db.Column(db.Integer, db.ForeignKey('ingredient.id'))
     quantity = db.Column(db.Float)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-class RecipeStock(ma.SQLAlchemyAutoSchema):
+class StockSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Stock
+        include_fk = True
+
+class Sales(db.Model):
+    line = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'))
+    quantity = db.Column(db.Float)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+class SalesSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Stock
         include_fk = True
