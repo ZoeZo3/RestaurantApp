@@ -2,27 +2,40 @@
 
 # Description of the app
 
+This is an app that has 2 purposes:
+
+- if you are a potential customer visiting the website, you can see the menu of the restaurant and contact them.
+
+- if you are the restaurant owner, you can:
+  - create an account
+  - update your menu whenever it changes
+  - register your various recipes, stock updates and sales
+    This allows you to:
+  - have access to a database with all your recipes
+  - keep track of your stock and see which products to repurchase
+  - update your menu for your customers to see
+
 # Launch the app
 
-flask --app main run
+From the root folder, launch the appication with: flask --app main run
 
-# Environment file
+# Configuration file
 
-Please create a ".env" file at the root of the project with the following variables:
-DB_NAME = 'users.db'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///${DB_NAME}'
-SECRET_KEY = 'secretkey'
-MAIL_SERVER ='smtp.gmail.com'
-MAIL_PORT = 465
-MAIL_USE_TLS = False
-MAIL_USE_SSL = True
+Create a ".env.private" file in the "website" folder with the following variables:
+SECRET_KEY = 'your secretkey'
 MAIL_USERNAME = 'your email adress' --> to send an email from the contact page
 MAIL_PASSWORD = 'your password' --> to send an email from the contact page
-IMPORT_FOLDER = 'static/menu'
 
-# Commments on the app
+# Commments
 
-Gestion des unités pourrait être gérée via fichier de config, puis depuis l'interface utilisateur
+- Unit management could be handled via config file, or even more user-friendly from the user interface
+- Stock page: when modifying the stock, the input and "register" button could be linked so that clicking on enter works to register the modification.
+- Responsivity: Some pages of the website are not mobile friendly enough:
+  - Recipes page: the display of the ingredients in a recipe
+  - Stock page: the tables displaying the stocks
+    I could also work on a more responsive font size.
+- Further work of factorization could be done
 
-pip install Flask
-pip install python-dotenv
+# NB
+
+You can enter a recipe with no ingredient, I just won't affect your stock if you enter a sale.

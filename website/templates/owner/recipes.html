@@ -3,6 +3,8 @@
 {% block content %}
     <h1 class="title">Vos recettes</h1>
     <div id="accordion" class="overflow-auto" style="max-height: 300px;">
+        {% set nb_recipes = recipes | length %}
+        {% if nb_recipes > 0 %}
         <ul id="recipesListing" class="list-group">
             {% for recipe in recipes %}
             <li id="recipe_{{ recipe.id }}" class="recipe-line">
@@ -24,7 +26,13 @@
                                     {% endif %}
                                 {%endfor %}
                                 <li class="list-group-item">
-                                    <button type="button" class="btn btn-green btn-sm" onclick="updateRecipeModal({{ recipe_ingredients_dict }})" style="margin-bottom: 15px;">Modifier</button>
+                                    <button type="button" class="btn btn-green btn-sm" id="updateButton_{{ recipe. id }}" style="margin-bottom: 15px;">Modifier</button>
+                                    <script>
+                                        var updateButton = document.getElementById('updateButton_{{ recipe.id }}');
+                                        updateButton.addEventListener('click', function () {
+                                            openRecipeModal('{{ recipe_ingredients_dict | tojson | safe }}', '{{ ingredients_list | tojson | safe }}')
+                                        });
+                                    </script>
                                 </li>
                             </ul>
                     </div>
@@ -39,13 +47,16 @@
                 </div>                
             </li>
             {% endfor %}
+            {% else %}
+            <div style="width: 90%; margin: 0 auto;">Vous n'avez pas encore enregistré de recette.</div>
+            {% endif %}
         </ul>
     </div>
     <h1 align="center" style="margin-top: 70px; margin-bottom: 50px;">Ajouter une recette</h1>
     <div id="bodyRecipe" class="body-recipe">
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                addRecipeForm("");
+                createRecipeForm("");
                 addNewRow('{{ ingredients_list | tojson | safe }}', 'ingredientsList', 'ingredient');
                 var addButton = document.getElementById('addRowButton');
                 addButton.addEventListener('click', function () {
@@ -55,7 +66,7 @@
         </script>
     </div>
 
-    <!-- Update recipe modal -->
+    <!-- "Update recipe" modal -->
     <div class="modal fade" id="modalUpdateRecipe" tabindex="-1" role="dialog" aria-labelledby="modalUpdateRecipe" aria-hidden="true">
         <div class="modal-dialog modal-content" role="document">
             <div class="modal-header">
@@ -68,7 +79,7 @@
             <div id="bodyRecipeModal" class="modal-body-recipe">
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
-                        addRecipeForm("Modal");
+                        createRecipeForm("Modal");
                         var addButtonModal = document.getElementById('addRowButtonModal');
                         addButtonModal.addEventListener('click', function () {
                             addNewRow('{{ ingredients_list | tojson | safe }}', 'ingredientsListModal', 'ingredientModal');
@@ -79,7 +90,7 @@
         </div>
       </div>
 
-    <!-- New ingredient modal -->
+    <!-- "New ingredient" modal -->
     <div class="modal fade" id="modalRegisterIngredient" tabindex="-1" role="dialog" aria-labelledby="registerIngredient" aria-hidden="true"></div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

@@ -4,74 +4,49 @@
 
     <br><br>
     <h1 class="title">Contactez-nous</h1>
-    
-    <!--Section: Contact v.2-->
-    <section class="mb-4">
-        <!--Section description-->
-        <p class="text-center w-responsive mx-auto mb-5">N'hésitez pas à nous contacter si vous avez besoin d'informations complémentaires, nous vous répondrons dans les plus brefs délais.</p>
+    <p class="text-center w-responsive mx-auto mb-5">N'hésitez pas à nous contacter si vous avez besoin d'informations complémentaires, nous vous répondrons dans les plus brefs délais.</p>
 
-        <!--Short contacts-->
-        <div class="row">
-            <div class="col text-center">
-                <i class="fas fa-map-marker-alt mt-4 fa-2x"></i>
-                <p>Marseille 13005</p>
-            </div>
-
-            <div class="col text-center">
-                <i class="fas fa-phone mt-4 fa-2x"></i>
-                <p>07 69 61 22 22</p>
-            </div>
-
-            <div class="col text-center">
-                <i class="fas fa-envelope mt-4 fa-2x"></i>
-                <p>zoe.neirac@gmail.com</p>
-            </div>
+    <div class="row" style="width: 80%">
+        <div class="contact-item">
+            <i class="fas fa-map-marker-alt mt-4 fa-2x"></i>
+            <p>Marseille 13005</p>
         </div>
-        <br>
-        <br>
 
-        <!--Contact form-->
-        <div class="center-form">            
-            <form id="contactForm" name="contact-form" method="POST">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div>
-                            <input type="text" id="name" name="name" class="form-control" placeholder="Nom" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div>
-                            <input type="text" id="email" name="email" class="form-control" placeholder="Email" required>
-                        </div>
-                    </div>
+        <div class="contact-item">
+            <i class="fas fa-phone mt-4 fa-2x"></i>
+            <p>07 69 61 22 22</p>
+        </div>
+
+        <div class="contact-item">
+            <i class="fas fa-envelope mt-4 fa-2x"></i>
+            <p>zoe.neirac@gmail.com</p>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <div class="center-form">            
+        <form id="contactForm" name="contact-form" method="POST">
+            <div class="row">
+                <div style="width: 45%">
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Nom" required>
                 </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div>
-                            <input type="text" id="subject" name="subject" class="form-control" placeholder="Sujet" required>
-                        </div>
+                <div style="width: 45%">
+                    <input type="text" id="email" name="email" class="form-control" placeholder="Email" required>
+                </div>
+            </div>
+            <div class="row">
+                    <div  style="width: 100%">
+                        <input type="text" id="subject" name="subject" class="form-control" placeholder="Sujet" required>
                     </div>
-                </div>
-                <br>
-                <div class="row" margin-bottom="20px">
-                    <div class="col-md-12">
-                        <div>
-                            <textarea type="text" id="message" name="message" rows="4" class="form-control md-textarea" placeholder="Message" required></textarea>
-                        </div>
+            </div>
+            <div class="row" margin-bottom="20px">
+                    <div style="width: 100%">
+                        <textarea type="text" id="message" name="message" rows="4" class="form-control md-textarea" placeholder="Message" required></textarea>
                     </div>
-                </div>
-                <br>
-                <div class="text-center text-md-left contact-send">
-                    <a class="btn" onclick="document.getElementById('contactForm').submit();">Envoyer</a>
-                </div>
-            </form>
-        </div>   
-    </section>
-    <!--Section: Contact v.2-->
-
-
-
-
-    
+            </div>
+            <div class="btn btn-dark contact-send" onclick="document.getElementById('contactForm').submit();">Envoyer</div>
+        </form>
+    </div>   
+    <br><br><br><br>
 {% endblock%}

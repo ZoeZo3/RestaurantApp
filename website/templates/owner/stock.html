@@ -11,7 +11,7 @@
     <div class="add-stock-div">
         <h3>Ajouter du stock</h3>
         <form id="addStock" name="add-stock" method="POST">
-            <div class="add-stock-element" style="width: 30%">
+            <div class="centered-form-element" style="width: 30%">
                 <select type="text" id="ingredient_1" name="ingredient_1" class="form-control selectpicker selectpicker-ingredient" data-live-search="true" onchange="ingredientSelectUpdate(this, {{ ingredients_list }})" title="Sélectionner un ingrédient" required>
                     <option value="add"
                         data-content='<span class="btn btn-link btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
@@ -22,28 +22,28 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="add-stock-element quantity" style="width: 15%">
+            <div class="centered-form-element quantity" style="width: 25%">
                     <input type="number" id="quantity_1" name="quantity_1" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
             </div>
-            <div class="unit add-stock-element" style="width: 15%">
-                <label type="text" id="unit" name="unit">-</input>
+            <div class="unit centered-form-element" style="width: 15%">
+                <label type="text" id="unit" name="unit" class="no-margin">-</input>
             </div>
-            <div class="add-stock-element add-stock-submit" style="width: 30%">
+            <div class="centered-form-element add-stock-submit">
                 <button type="submit" name="register-stock" class="btn btn-dark stock-btn--add">Ajouter au stock</button>
             </div>
         </form>
     </div>
 
-    <h3 class="stock-list-title">Alerte sur les stocks bas</h3>
-    <div id="accordionAlert" class="overflow-auto" style="max-height: 300px;">
+    <h3 class="stock-list-title">Votre inventaire</h3>
+    <h5 class="stock-list-title stock-list-subtitle">Alerte sur les stocks bas</h5>
+    <div id="accordionAlert" class="overflow-auto" style="max-height: 300px;">   
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 createStockAccordion(document.getElementById("accordionAlert"), '{{ stock_dict_list  | tojson | safe  }}', "<=0");
             });
         </script>
     </div>
-        
-    <h3 class="stock-list-title">Reste de l'inventaire</h3>
+    <br>
     <div id="accordionOk" class="overflow-auto" style="max-height: 300px;">
         <script>
             document.addEventListener('DOMContentLoaded', function () {

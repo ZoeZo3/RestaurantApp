@@ -106,7 +106,7 @@ function addNewRow(list_str, div_id, type) {
 function ingredientRow(id, options, type, list) {
     return (`
         <div class="row">
-            <div style="width: 40%">
+            <div style="width: 40%" class="centered-form-element">
                 <select type="text" id="ingredient${type}_${id}" name="ingredient${type}_${id}" class="form-control selectpicker selectpicker-ingredient${type}_${id}" data-live-search="true" onchange="ingredientSelectUpdate(this, ${JSON.stringify(list).replaceAll("\"", "\'")})" title="Sélectionner un ingrédient" required>
                     <option value="add"
                         data-content='<span class="btn btn-link btn-add-ingredient" data-toggle="modal" data-target="modalForIngredient">
@@ -115,11 +115,11 @@ function ingredientRow(id, options, type, list) {
                     + options +
                 `</select>
             </div>
-            <div style="width: 20%">
+            <div style="width: 20%" class="centered-form-element">
                 <input type="number" id="quantity${type}_${id}" name="quantity${type}_${id}" min="0.1" step="0.1" class="form-control" placeholder="Quantité" required></input>
             </div>
-            <div class="unit" style="width: 20%">
-                <label type="text" id="unit${type}_${id}" name="unit${type}_${id}">-</input>
+            <div class="unit centered-form-element left-form-element" style="width: 20%">
+                <label type="text" id="unit${type}_${id}" name="unit${type}_${id}" class="no-margin">-</input>
             </div>
             <button class="close" type="button" onclick="deleteRow(this)">
                 <span>&times;</span>
@@ -161,29 +161,31 @@ function menuRecipeRow(id, options, type) {
     `)
 }
 
-function addRecipeForm(type) {
-    div = document.getElementById(`bodyRecipe${type}`);
+function createRecipeForm(type) {
+    var div = document.getElementById(`bodyRecipe${type}`);
+    var button_text = (type == "") ? "Ajouter la recette" : "Modifier la recette"
     div.innerHTML =(
     `<form id="addRecipe${type}" name="addRecipe${type}" method="POST">
-    <div class="row" style="margin-bottom: 40px;"">
-        <input type="text" id="name${type}" name="name${type}" class="form-control recipe-header" placeholder="Nom" required>
-        <input type="text" id="description${type}" name="description${type}" class="form-control recipe-header" placeholder="Descriptif" required>
-    </div>
-    <div class="row" style="margin-bottom: 10px;">
-        <div class="form-header" style="width: 40%">Ingrédient</div>
-        <div class="form-header" style="width: 20%">Quantité</div>
-        <div class="form-header" style="width: 20%">Unité</div>
-        <div style="width: 5%"></div>
-    </div>   
-    <div id="ingredientsList${type}">  
-    </div> 
-    <div class="row">
-        <button class="btn btn-light" type="button" id="addRowButton${type}"><i class="fas fa-plus add_icon"></i> Ajouter un ingrédient</button>
-    </div>
-    
-    <div align="center">
-        <button type="submit" name="registerRecipe${type}" class="btn btn-dark">Ajouter la recette</button>
-    </div>
+        <div class="row" style="margin-bottom: 40px;"">
+            <input type="text" id="id${type}" name="id${type}" hidden>
+            <input type="text" id="name${type}" name="name${type}" class="form-control recipe-header" placeholder="Nom" required>
+            <input type="text" id="description${type}" name="description${type}" class="form-control recipe-header" placeholder="Descriptif" required>
+        </div>
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="form-header" style="width: 42%">Ingrédient</div>
+            <div class="form-header" style="width: 22%">Quantité</div>
+            <div class="form-header" style="width: 20%">Unité</div>
+            <div style="width: 5%"></div>
+        </div>   
+        <div id="ingredientsList${type}">  
+        </div> 
+        <div class="row">
+            <button class="btn btn-light" type="button" id="addRowButton${type}"><i class="fas fa-plus add_icon"></i> Ajouter un ingrédient</button>
+        </div>
+        
+        <div align="center">
+            <button type="submit" name="registerRecipe${type}" class="btn btn-dark">${button_text}</button>
+        </div>
     </form>`);
 }
 
@@ -194,85 +196,93 @@ function deleteRow(row) {
 }
 
 // update the modal to update recipe, and make it pop up
-function updateRecipeModal(recipe_ingredients_dict) {
-    console.log(recipe_ingredients_dict)
-    // simluate click on the modal activator button
-    $("#buttonForModalUpdateRecipe")[0].click();
+function openRecipeModal(recipe_ingredients_dict, ingredients_list) {
+    recipe_ingredients_dict = JSON.parse(recipe_ingredients_dict);
 
     // remove all existing ingredient rows from the modal / querySelectorAll to get a static selection to be able to remove
-    var existing_lines = $("#ingredientsListModal")[0].querySelectorAll(".close")
+    var existing_lines = $("#ingredientsListModal")[0].querySelectorAll(".close");
     for (line=0; line<existing_lines.length; line++){
-        deleteRow(existing_lines[line])
+        deleteRow(existing_lines[line]);
     }
     
     // import recipe's name and description in the input fields
-    $("#nameModal")[0].value = recipe_ingredients_dict.name
-    $("#descriptionModal")[0].value = recipe_ingredients_dict.description
+    $("#idModal")[0].value = recipe_ingredients_dict.id;
+    $("#nameModal")[0].value = recipe_ingredients_dict.name;
+    $("#descriptionModal")[0].value = recipe_ingredients_dict.description;
 
     // create input fileds for each ingredient of the recipe
     for (i in recipe_ingredients_dict.ingredients) {
-        var ingredient = recipe_ingredients_dict.ingredients[i]
-        console.log(ingredient)
-        addNewRow(TODO)
-    }
-
-    /*
-    // create input fileds for each ingredient of the recipe
-    for (i=0; i<recipe_ingredients_dict.ingredients.length; i++) {
-        id = (i+1).toString()
-        addNewIngredientRow(ingredients_list, "ingredients_list_modal", id)
-        // import current recipe's ingredient and quantity
-        $("#ingredient_"+ id +"_modal")[0].value = recipe_ingredients_dict.ingredients[i].id
-        $("#ingredient_"+ id +"_modal").selectpicker('refresh')
-        $("#quantity_"+ id +"_modal")[0].value = recipe_ingredients_dict.ingredients[i].quantity
-        $("#unit_"+ id +"_modal")[0].innerHTML = recipe_ingredients_dict.ingredients[i].unit
+        var ingredient = recipe_ingredients_dict.ingredients[i];
+        addNewRow(ingredients_list, 'ingredientsListModal', 'ingredientModal');
+        var id = (parseInt(i)+1).toString();
+        var unit = (["unité", "pincée", "cuillère"].indexOf(ingredient.unit) > -1 &&  Math.abs(ingredient.quantity) > 1)  ? `${ingredient.unit}s` : ingredient.unit
+        $("#ingredientModal_"+ id)[0].value = ingredient.id;
+        $("#ingredientModal_"+ id).selectpicker('refresh');
+        $("#quantityModal_"+ id)[0].value = ingredient.quantity;
+        $("#unitModal_"+ id)[0].innerHTML = unit;
     }
 
     // simluate click on the modal activator button
-    $("#buttonForModalUpdateRecipe")[0].click();*/
+    $("#buttonForModalUpdateRecipe")[0].click();
 }
 
 function createStockAccordion(div_to_append, stock, condition) {
     stock_list = JSON.parse(stock);
+    
+    if (stock_list.length > 0) {
+        var alert = "";
+        if (condition == "<=0") {
+            alert = "stock-alert";
+        }
 
-    var items_list = "";
-    for (i in stock_list) {
-        item = stock_list[i];
-        if (eval(item.quantity + condition)) {
-            var new_item_unit = item.unit;
-            if ((new_item_unit === "unité" | new_item_unit === "pincée" | new_item_unit === "cuillère") && Math.abs(item.quantity) > 1) {
-                new_item_unit += 's';
+        var items_list = "";
+        for (i in stock_list) {
+            item = stock_list[i];
+            if (eval(item.quantity + condition)) {
+                var new_item_unit = (["unité", "pincée", "cuillère"].indexOf(item.unit) > -1 &&  Math.abs(item.quantity) > 1) ? `${item.unit}s` : item.unit
+                var new_item_quantity = Math.round(item.quantity * 10) / 10;
+                var new_item = `
+                    <li id="item_${ item.id }" class="stock-item-line">
+                        <div class="stock-item-line--section stock-item-section--name">${ item.name }</div>
+                        <div class="stock-item-line--section quantity">${new_item_quantity}</div>
+                        <div class="stock-item-line--section">${ new_item_unit }</div>
+                        <div class="stock-item-line--section stock-item-section--buttons">
+                            <button type="button" class="btn btn-light stock-btn--update" onclick="updateStock(this)">
+                                Modifier
+                            </button>
+                            <button type="button" class="btn btn-green stock-btn--save" onclick="saveStock(this)">
+                                Enregistrer
+                            </button>
+                            <p class="stock-item-line-quantity--alert">Merci d'entrer un chiffre avec au plus 1 décimale.</p>
+                        </div>
+                    </li>`;
+                items_list += new_item;
             }
-            var new_item_quantity = Math.round(item.quantity * 10) / 10;
-            var new_item = `
-                <li id="item_${ item.id }" class="stock-item-line">
-                    <div class="stock-item-line--section stock-item-section--name">${ item.name }</div>
-                    <div class="stock-item-line--section quantity">${new_item_quantity}</div>
-                    <div class="stock-item-line--section">${ new_item_unit }</div>
-                    <div class="stock-item-line--section stock-item-section--buttons">
-                        <button type="button" class="btn btn-light stock-btn--update" onclick="updateStock(this)">
-                            Modifier
-                        </button>
-                        <button type="button" class="btn btn-green stock-btn--save" onclick="saveStock(this)">
-                            Enregistrer
-                        </button>
-                        <p class="stock-item-line-quantity--alert">Merci d'entrer un chiffre avec au plus 1 décimale.</p>
-                    </div>
-                </li>`;
-            items_list += new_item;
+        }
+
+        if (items_list.length > 0) {
+            div_to_append.innerHTML = (`
+            <ul class="list-group stocks-listing ${alert}">
+                    <li class="stock-item-line stock-item-header ${alert}">
+                        <div class="stock-item-line--section stock-title stock-item-section--name">Ingrédient</div>
+                        <div class="stock-item-line--section stock-title">Quantité</div>
+                        <div class="stock-item-line--section stock-title">Unité</div>
+                        <div class="stock-item-line--section stock-title stock-item-section--buttons"></div>
+                    </li>
+                    ${items_list}
+                </ul>
+            </div>
+            `);
+        } else {
+            if (condition == "<=0") {
+                document.querySelectorAll('.stock-list-subtitle')[0].style.display = "none";
+            }
+        }
+        
+    } else {
+        if (condition == ">0") {
+            document.querySelectorAll('.stock-list-subtitle')[0].style.display = "none";
+            div_to_append.innerHTML = (`<div style="margin: 0 auto; width: 80%;">Vous n'avez pas encore de stock enregistré.</div>`)
         }
     }
-    
-    div_to_append.innerHTML = (`
-    <ul class="list-group stocks-listing">
-            <li class="stock-item-line stock-item-header">
-                <div class="stock-item-line--section stock-title stock-item-section--name">Ingrédient</div>
-                <div class="stock-item-line--section stock-title">Quantité</div>
-                <div class="stock-item-line--section stock-title">Unité</div>
-                <div class="stock-item-line--section stock-title stock-item-section--buttons"></div>
-            </li>
-            ${items_list}
-        </ul>
-    </div>
-    `);
 }

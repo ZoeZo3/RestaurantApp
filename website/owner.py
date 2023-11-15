@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, jsonify
+from flask import Blueprint, render_template, request, flash, jsonify, redirect
 from flask_login import login_required, current_user
 from .models import Ingredient, IngredientSchema, Recipe, RecipeSchema, IngredientByRecipe, IngredientByRecipeSchema, Stock, Sales
 from . import db, owner, ma
@@ -67,40 +67,42 @@ def recipes():
                 flash("Recette ajoutée !", category="success")
         # if the form sent is the one to update recipes
         elif "registerRecipeModal" in request.form:
-            print("todo")
-            id = request.form.get("id")
-            name = request.form.get("name").lower()
-            description = request.form.get("description")
+            id = request.form.get("idModal")
+            name = request.form.get("nameModal").lower()
+            description = request.form.get("descriptionModal")
             #retrieve ingredients and their quantities in a list of dicts
-            ids = []
+            ingredients_ids_list = []
             for element in request.form:
-                if "ingredient_" in element:
-                    ids.append(element.split("_")[1])
-            ingredients = []
-            for i in ids:
-                if request.form.get("ingredient_" + str(i)+ "_modal") != "add":
-                    ingredients.append({
-                        "id": request.form.get("ingredient_" + str(i) + "_modal"),
-                        "quantity": request.form.get("quantity_" + str(i) + "_modal")
+                if "ingredientModal_" in element:
+                    ingredients_ids_list.append(element.split("_")[1])
+            ingredients_dict = []
+            for i in ingredients_ids_list:
+                if request.form.get("ingredientModal_" + i) != "add":
+                    ingredients_dict.append({
+                        "id": request.form.get("ingredientModal_" + i),
+                        "quantity": request.form.get("quantityModal_" + i)
                     })
+            
             # update recipe
             Recipe.query.filter_by(user_id=current_user.id, id=id)\
                     .update({'name': name, "description": description})
-            db.session.commit()
             # update ingredients
             previous_ingredients = IngredientByRecipe.query.filter_by(recipe_id=id).all()
-            for ingredient in ingredients:
+            for ingredient in ingredients_dict:
                 line = IngredientByRecipe.query.filter_by(recipe_id=id, id=ingredient["id"]).first()
                 if line:
-                    IngredientByRecipe.query.filter_by(recipe_id=id, id=ingredient["id"])\
-                        .update({"quantity": ingredient["quantity"]})
-                    previous_ingredients.remove(line)
+                    line.quantity = ingredient["quantity"]
+                    try:
+                        previous_ingredients.remove(line)
+                    except:
+                        flash("Vous avez entré un ingrédient en double ! Vos modifications n'ont pas pu être enregistrées.", category="error")
+                        return redirect(request.url)
                 else:
                     new_ingredient = IngredientByRecipe(id=ingredient["id"], quantity=ingredient["quantity"], recipe_id=id)
                     db.session.add(new_ingredient)
-                    db.session.commit()
             for ingredient_to_remove in previous_ingredients:
                 IngredientByRecipe.query.filter_by(recipe_id=id, id=ingredient_to_remove.id).delete()
+
             db.session.commit()
          
     # get all registred ingredients
@@ -109,7 +111,7 @@ def recipes():
     output = ingredients_schema.dump(ingredients_list)
     
     # get all registred recipes
-    recipes = Recipe.query.filter_by(user_id=current_user.id)
+    recipes = Recipe.query.filter_by(user_id=current_user.id).all()
 
     # get all ingredients for recipes
     ingredients_by_recipe = db.session.query(Ingredient.id, Ingredient.name, Ingredient.unit, IngredientByRecipe.quantity, IngredientByRecipe.recipe_id)\

@@ -112,6 +112,20 @@ li > a:hover {
     background-color: #f1f1f1;
 }
 
+.no-margin {
+    margin: 0;
+}
+
+.centered-form-element {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left-form-element {
+    justify-content: left;
+}
+
 .homepage-text {
     font-size: 20px;
 }
@@ -241,7 +255,11 @@ li > a:hover {
 .modal-body-recipe {
     display: flex;
     justify-content: center;
-    margin: 5%;
+    margin: 5% auto;
+}
+
+.modal-content {
+    margin: 5% auto;
 }
 
 .row {
@@ -253,7 +271,9 @@ li > a:hover {
 }
 
 .row-modal {
-    justify-content: space-around;
+    justify-content: space-evenly;
+    flex-wrap: nowrap;
+    gap: 3%;
 }
 
 .recipe-header {
@@ -273,19 +293,15 @@ li > a:hover {
     margin-right: 6%;
 }
 
-.contact-send > a{
-    background-color: #eab676;
-    color: #eeeee4;
-    border: none;
+.contact-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
-.contact-send > a:hover {
-    color: #eeeee4;
-    background-color: #e7aa60;
-}
-
-.contact-send > a:active {
-    background-color: #e7aa60;
+.contact-send {
+    float: right;
 }
 
 .stock-title {
@@ -294,9 +310,12 @@ li > a:hover {
 
 .stock-list-title {
     width: 80%;
-    margin: 0 auto;
-    margin-top: 50px;
-    margin-bottom: 30px;
+    margin: 50px auto 30px auto;
+}
+
+.stock-list-subtitle {
+    margin: -10px auto 10px auto;
+    color: #a21f0a;
 }
 
 .stocks-listing {
@@ -318,11 +337,15 @@ li > a:hover {
     color: #eeeee4;
 }
 
+.stock-alert {
+    color: #a21f0a;
+}
+
 .stock-item-line {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch;
     margin: 0px;
     width: 80%;
 }
@@ -377,12 +400,9 @@ li > a:hover {
 #addStock {
     display: flex;
     justify-content: space-between;
+    flex-flow: row wrap;
+    row-gap: 10px;
     margin-top: 30px;
-}
-.add-stock-element {
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .add-stock-submit {
@@ -392,4 +412,11 @@ li > a:hover {
 .stock-btn--add {
     height: 100%;
     padding: 10px;
+}
+
+/* resize tables on medium screens */
+@media all and (max-width: 800px) {
+    .stock-item-line, .add-stock-div, .stock-list-title {
+      width: 100%;
+    }
 }

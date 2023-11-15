@@ -32,7 +32,7 @@ def contact():
         if sender == "" or name == "" or subject == "" or body == "":
             flash("Merci de remplir tous les champs.", category="error")
         else:
-            msg = Message(subject, sender = sender, recipients = [owner])
+            msg = Message(subject, sender = "contact@restaurant.fr", recipients = [owner])
             msg.body = body + "\nNom: " + name + "\nEmail: " + sender
             mail.send(msg)
             flash("Votre message a bien été envoyé !", category="success")

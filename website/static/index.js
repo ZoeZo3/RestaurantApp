@@ -4,6 +4,9 @@ function ingredientSelectUpdate(selector, ingredients_list) {
     if (selector.value == "add") {
         // update modal button's id to keep track of the row from which the ingredient is being added
         $(".btn-add-ingredient-to-database")[0].id = "line_" + selector.id;
+        //clean the modal
+        document.querySelector("#modalRegisterIngredient #ingredient").value = ""
+        document.querySelector("#modalRegisterIngredient #unit").value = ""
         // simluate click on the modal activator button
         $("#buttonForModalRegisterIngredient")[0].click();
     }
