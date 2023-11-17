@@ -46,14 +46,14 @@ function addIngredientToDatabase(list) {
                 $(".close-modal-ingredient").click();
                 // add new option to all selectors
                 selectors = $(".selectpicker")
-                for (var i = 0; i < selectors.length; i++) {
+                for (let i = 0; i < selectors.length; i++) {
                     option = document.createElement("option");
                     option.value = response.id;
                     option.text = toTitleCase(response.name);
                     selectors[i].append(option);
                 }
                 // refresh all selectors
-                for (var i = 0; i < selectors.length; i++) {
+                for (let i = 0; i < selectors.length; i++) {
                     $("#ingredient_" + (i+1).toString()).selectpicker('refresh');
                     $("#ingredient_" + (i+1).toString() + "_modal").selectpicker('refresh');
                 }

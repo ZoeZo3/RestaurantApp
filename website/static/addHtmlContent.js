@@ -11,7 +11,7 @@ const units = [
 function createModalNewIngredient(modal_div) {
     // Modal div to open a popup when registreing new element
     var unitOptions = "";
-    for (var i = 0; i < units.length; i++) {
+    for (let i = 0; i < units.length; i++) {
         unitOptions += (`<option value=${units[i].value}>${toTitleCase(units[i].name)}</option>`);
     }
 
@@ -81,7 +81,7 @@ function addNewRow(list_str, div_id, type) {
     // create the new div
     var new_div = document.createElement("div");
     var options = "";
-    for (var i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i++) {
         options += (`<option class='${type}_option' value=${list[i].id}>${toTitleCase(list[i].name)}</option>`);
     }
     
@@ -212,10 +212,10 @@ function openRecipeModal(recipe_ingredients_dict, ingredients_list) {
 
     // create input fileds for each ingredient of the recipe
     for (i in recipe_ingredients_dict.ingredients) {
-        var ingredient = recipe_ingredients_dict.ingredients[i];
+        let ingredient = recipe_ingredients_dict.ingredients[i];
         addNewRow(ingredients_list, 'ingredientsListModal', 'ingredientModal');
-        var id = (parseInt(i)+1).toString();
-        var unit = (["unité", "pincée", "cuillère"].indexOf(ingredient.unit) > -1 &&  Math.abs(ingredient.quantity) > 1)  ? `${ingredient.unit}s` : ingredient.unit
+        let id = (parseInt(i)+1).toString();
+        let unit = (["unité", "pincée", "cuillère"].indexOf(ingredient.unit) > -1 &&  Math.abs(ingredient.quantity) > 1)  ? `${ingredient.unit}s` : ingredient.unit
         $("#ingredientModal_"+ id)[0].value = ingredient.id;
         $("#ingredientModal_"+ id).selectpicker('refresh');
         $("#quantityModal_"+ id)[0].value = ingredient.quantity;
@@ -239,9 +239,9 @@ function createStockAccordion(div_to_append, stock, condition) {
         for (i in stock_list) {
             item = stock_list[i];
             if (eval(item.quantity + condition)) {
-                var new_item_unit = (["unité", "pincée", "cuillère"].indexOf(item.unit) > -1 &&  Math.abs(item.quantity) > 1) ? `${item.unit}s` : item.unit
-                var new_item_quantity = Math.round(item.quantity * 10) / 10;
-                var new_item = `
+                let new_item_unit = (["unité", "pincée", "cuillère"].indexOf(item.unit) > -1 &&  Math.abs(item.quantity) > 1) ? `${item.unit}s` : item.unit
+                let new_item_quantity = Math.round(item.quantity * 10) / 10;
+                let new_item = `
                     <li id="item_${ item.id }" class="stock-item-line">
                         <div class="stock-item-line--section stock-item-section--name">${ item.name }</div>
                         <div class="stock-item-line--section quantity">${new_item_quantity}</div>

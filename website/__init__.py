@@ -9,22 +9,27 @@ import os
 db = SQLAlchemy()
 ma = Marshmallow()
 mail = Mail()
-private_config_file = ".env.private"
-load_dotenv(".env.public")
+print(os.getcwd())
+
+private_config_file = "./website/.env.private"
+public_config_file = "./website/.env.public"
+load_dotenv(private_config_file)
 owner = os.getenv('MAIL_USERNAME')
 
 def create_app():
-    app = Flask(__name__, static_folder='static')  
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
-    app.config['MAIL_SERVER']= os.getenv('MAIL_SERVER')
-    app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
-    app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
-    app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
-    app.config['IMPORT_FOLDER'] = os.getenv('IMPORT_FOLDER')
-    load_dotenv(private_config_file)
+    app = Flask(__name__, static_folder='static')
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
     app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+
+    load_dotenv(public_config_file)
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+    app.config['MAIL_SERVER']= os.getenv('MAIL_SERVER')
+    app.config['MAIL_PORT'] = os.getenv('MAIL_PORT')
+    app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
+    app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL') == 'True'
+    app.config['IMPORT_FOLDER'] = os.getenv('IMPORT_FOLDER')
+    
     db.init_app(app)
     ma.init_app(app)
     mail.init_app(app)
